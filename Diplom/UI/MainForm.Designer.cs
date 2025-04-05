@@ -11,20 +11,11 @@
         private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.ToolStripMenuItem menuLogout;
 
-        /// <summary>
-        /// Освобождает используемые ресурсы
-        /// </summary>
         protected override void Dispose(bool disposing)
         {
-            
             base.Dispose(disposing);
         }
 
-        #region Код, сгенерированный дизайнером формы
-
-        /// <summary>
-        /// Метод для инициализации компонентов формы
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
@@ -73,6 +64,7 @@
             // 
             // topMenu
             // 
+            this.topMenu.BackColor = System.Drawing.Color.Transparent;
             this.topMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.topMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuOptions});
@@ -87,27 +79,35 @@
             this.menuProfile,
             this.menuSettings,
             this.menuLogout});
+            this.menuOptions.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.menuOptions.Name = "menuOptions";
             this.menuOptions.Size = new System.Drawing.Size(79, 24);
             this.menuOptions.Text = "≡ Меню";
             // 
             // menuProfile
             // 
+            this.menuProfile.BackColor = System.Drawing.Color.Transparent;
             this.menuProfile.Name = "menuProfile";
             this.menuProfile.Size = new System.Drawing.Size(245, 26);
             this.menuProfile.Text = "🏠 Личный кабинет";
+            this.menuProfile.Click += new System.EventHandler(this.menuProfile_Click);
+            this.menuProfile.Paint += new System.Windows.Forms.PaintEventHandler(this.RemoveBackground);
             // 
             // menuSettings
             // 
+            this.menuSettings.BackColor = System.Drawing.Color.Transparent;
             this.menuSettings.Name = "menuSettings";
             this.menuSettings.Size = new System.Drawing.Size(245, 26);
             this.menuSettings.Text = "⚙ Настройки";
+            this.menuSettings.Paint += new System.Windows.Forms.PaintEventHandler(this.RemoveBackground);
             // 
             // menuLogout
             // 
+            this.menuLogout.BackColor = System.Drawing.Color.Transparent;
             this.menuLogout.Name = "menuLogout";
             this.menuLogout.Size = new System.Drawing.Size(245, 26);
             this.menuLogout.Text = "🚪 Выйти из аккаунта";
+            this.menuLogout.Paint += new System.Windows.Forms.PaintEventHandler(this.RemoveBackground);
             // 
             // MainForm
             // 
@@ -124,6 +124,7 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Рабочий стол";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.topMenu.ResumeLayout(false);
@@ -133,6 +134,9 @@
 
         }
 
-        #endregion
+        private void RemoveBackground(object sender, System.Windows.Forms.PaintEventArgs e)
+        {
+            ((System.Windows.Forms.ToolStripMenuItem)sender).BackColor = System.Drawing.Color.Transparent;
+        }
     }
 }

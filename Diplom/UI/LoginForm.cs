@@ -32,7 +32,10 @@ namespace Diplom
             CLogin cLogin = new CLogin();
             if (cLogin.Login(login, password))
             {
-                MainForm mainForm = new MainForm();
+                UserSession session = new UserSession();
+                int UserId = session.GetUserIdByLogin(login);
+                this.Hide();
+                MainForm mainForm = new MainForm(UserId);
                 mainForm.Show();
             }
         }
@@ -76,7 +79,7 @@ namespace Diplom
 
         private void TextBox_Leave(object sender, EventArgs e)
         {
-            System.Windows.Forms.TextBox textBox = sender as System.Windows.Forms.TextBox;  // Указание полного имени типа
+            System.Windows.Forms.TextBox textBox = sender as System.Windows.Forms.TextBox;  
             if (textBox != null)
             {
                 if (string.IsNullOrWhiteSpace(textBox.Text))

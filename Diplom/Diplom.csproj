@@ -46,29 +46,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CBanInfo.cs" />
-    <Compile Include="WorkTimer.cs" />
-    <Compile Include="DatabaseConfig.cs" />
-    <Compile Include="CLogin.cs" />
-    <Compile Include="Encryption.cs" />
-    <Compile Include="LoginForm.cs">
+    <Compile Include="Core\ApplicationBlocker.cs" />
+    <Compile Include="Core\UserDataService.cs" />
+    <Compile Include="Core\ViolationService.cs.cs" />
+    <Compile Include="Core\WorkSessionService.cs" />
+    <Compile Include="Interfaces\IUserDataService.cs" />
+    <Compile Include="Interfaces\IViolationService.cs" />
+    <Compile Include="Interfaces\IWorkSessionService.cs" />
+    <Compile Include="Repositories\ApplicationRepository.cs" />
+    <Compile Include="Core\ApplicationTracker.cs" />
+    <Compile Include="Core\BlockedApp.cs" />
+    <Compile Include="Repositories\BlockedAppsRepository.cs" />
+    <Compile Include="Core\CBanInfo.cs" />
+    <Compile Include="Interfaces\IApplicationBlocker.cs" />
+    <Compile Include="Interfaces\IApplicationRepository.cs" />
+    <Compile Include="Interfaces\IBlockedAppsRepository.cs" />
+    <Compile Include="Monitoring\InactivityMonitor.cs" />
+    <Compile Include="Interfaces\IViolationRepository.cs" />
+    <Compile Include="Core\NativeMethods.cs" />
+    <Compile Include="Security\UserSession.cs" />
+    <Compile Include="Repositories\ViolationRepository.cs" />
+    <Compile Include="Monitoring\WorkSessionManager.cs" />
+    <Compile Include="Monitoring\WorkTimer.cs" />
+    <Compile Include="Core\DatabaseConfig.cs" />
+    <Compile Include="Security\CLogin.cs" />
+    <Compile Include="Core\Encryption.cs" />
+    <Compile Include="UI\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LoginForm.Designer.cs">
+    <Compile Include="UI\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="UI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="LoginForm.resx">
+    <Compile Include="UI\UserProfileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\UserProfileForm.Designer.cs">
+      <DependentUpon>UserProfileForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -81,6 +107,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UI\UserProfileForm.resx">
+      <DependentUpon>UserProfileForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Resources\ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
