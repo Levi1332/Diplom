@@ -38,9 +38,10 @@ namespace Diplom
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                string query = "SELECT SUM(EffectiveTime) FROM WorkSessions WHERE UserID = 1";
+                string query = "SELECT SUM(EffectiveTime) FROM WorkSessions WHERE UserID = @UserId";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
                     var result = cmd.ExecuteScalar();
                     if (result != null && int.TryParse(result.ToString(), out int seconds))
                     {

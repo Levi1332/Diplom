@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Diplom
@@ -8,14 +7,25 @@ namespace Diplom
     {
         private Timer inactivityTimer;
         private WorkSessionManager workSession;
-        private bool wasPaused = false; 
-        private const int InactivityThreshold = 60; 
+        private bool wasPaused = false;
+        private bool wasPausedByInactivity = false;
+        private WorkTimeSettings _settings;
 
-        public InactivityMonitor(WorkSessionManager sessionManager)
+        private const int InactivityThreshold = 40; 
+        private bool isMonitoring = true;
+        private readonly MainForm mainForm;
+        private DateTime lastInteraction = DateTime.Now;
+
+        public InactivityMonitor(WorkSessionManager sessionManager, MainForm form)
         {
             workSession = sessionManager;
-            inactivityTimer = new Timer();
-            inactivityTimer.Interval = 1000; 
+            mainForm = form;
+            _settings = SettingsManager.LoadSettings();
+
+            inactivityTimer = new Timer
+            {
+                Interval = 1000
+            };
             inactivityTimer.Tick += CheckInactivity;
             inactivityTimer.Start();
 
@@ -24,19 +34,41 @@ namespace Diplom
 
         private void CheckInactivity(object sender, EventArgs e)
         {
-            int idleTime = GetIdleTimeInSeconds();
+            if (mainForm.IsLunchBreak || !workSession.IsRunning || !isMonitoring || wasPausedByInactivity)
+                return;
 
-            if (idleTime >= InactivityThreshold && workSession.IsRunning)
+            int idleTime = (int)(DateTime.Now - lastInteraction).TotalSeconds;
+
+            if (idleTime >= InactivityThreshold)
             {
-                workSession.Pause(); 
+                workSession.Pause();
                 wasPaused = true;
-                MessageBox.Show("Таймер поставлен на паузу из-за бездействия.", "Бездействие", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                wasPausedByInactivity = true;
+                if (_settings.NotifyViolations)
+                { 
+                    MessageBox.Show("Таймер поставлен на паузу из-за бездействия.", "Бездействие", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
+
+        public void ResetInactivityFlag()
+        {
+            wasPausedByInactivity = false;
+        }
+
+        public void ResetIdleTimer()
+        {
+            lastInteraction = DateTime.Now;
+        }
+
+        public void PauseMonitoring() => isMonitoring = false;
+        public void ResumeMonitoring() => isMonitoring = true;
+        public bool IsMonitoringActive => isMonitoring;
 
         private void HookActivityEvents()
         {
             Application.Idle += (s, e) => ResumeIfPaused();
+            Application.AddMessageFilter(new ActivityMessageFilter(this));
         }
 
         private void ResumeIfPaused()
@@ -45,30 +77,9 @@ namespace Diplom
             {
                 workSession.Resume();
                 wasPaused = false;
+                wasPausedByInactivity = false; 
                 MessageBox.Show("Рабочий таймер продолжен.", "Возобновление", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
-        private int GetIdleTimeInSeconds()
-        {
-            LASTINPUTINFO lastInput = new LASTINPUTINFO();
-            lastInput.cbSize = (uint)Marshal.SizeOf(typeof(LASTINPUTINFO));
-
-            if (GetLastInputInfo(ref lastInput))
-            {
-                return (Environment.TickCount - (int)lastInput.dwTime) / 1000;
-            }
-            return 0;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct LASTINPUTINFO
-        {
-            public uint cbSize;
-            public uint dwTime;
-        }
-
-        [DllImport("user32.dll")]
-        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
     }
 }

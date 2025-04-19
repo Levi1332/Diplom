@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Diplom.Core;
 
 namespace Diplom
 {
     public interface IWorkSessionService
     {
-        DataTable GetWorkSessions();
+        Dictionary<DateTime, TimeSpan> GetUserDailyWorkTime(int userId);
+        Dictionary<DateTime, TimeSpan> GetUserDailyWorkTime(int userId, int month, int year);
+        List<WorkSession> GetUserSessions(int userId);
     }
 }

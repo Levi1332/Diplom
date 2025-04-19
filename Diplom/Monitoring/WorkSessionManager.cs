@@ -7,7 +7,8 @@ namespace Diplom
     {
         private int userId;
         private string connectionString = DatabaseConfig.connectionString;
-        private bool isRunning; 
+        private bool isRunning;
+        private bool lunchBonusAdded = false;
 
         public WorkSessionManager(int userId, System.Windows.Forms.Label timerLabel) : base(timerLabel)
         {
@@ -83,11 +84,11 @@ namespace Diplom
         private void UpdateWorkSession(int sessionId, int workedSeconds, SqlConnection conn)
         {
             string updateQuery = @"
-        UPDATE WorkSessions 
-        SET 
-            EffectiveTime = EffectiveTime + @WorkedSeconds,
-            EndTime = GETDATE()
-        WHERE SessionID = @SessionID";
+                UPDATE WorkSessions 
+                SET 
+                    EffectiveTime = EffectiveTime + @WorkedSeconds,
+                    EndTime = GETDATE()
+                WHERE SessionID = @SessionID";
 
             using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
             {
@@ -125,6 +126,13 @@ namespace Diplom
                 overtimeCmd.ExecuteNonQuery();
             }
         }
+        public void AddLunchBonus(TimeSpan duration)
+        {
+            if (lunchBonusAdded) return;
+
+            secondsElapsed += (int)duration.TotalSeconds;
+            lunchBonusAdded = true;
+        }
 
         public override void Start()
         {
@@ -144,6 +152,5 @@ namespace Diplom
                 isRunning = false;
             }
         }
-
     }
 }

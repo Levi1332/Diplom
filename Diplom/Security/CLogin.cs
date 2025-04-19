@@ -6,9 +6,11 @@ namespace Diplom
 {
     internal class CLogin
     {
+        private WorkTimeSettings _settings;
         private static string connectionString = DatabaseConfig.connectionString;
         public bool Login(string login, string password)
         {
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -46,8 +48,12 @@ namespace Diplom
                     }
                 }
             }
-
-            MessageBox.Show("Вход успешен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _settings = SettingsManager.LoadSettings();
+            if (_settings.NotifyLogin)
+            {
+                MessageBox.Show("Вход успешен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            
             return true;
         }      
     }
