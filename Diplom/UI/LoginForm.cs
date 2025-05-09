@@ -30,15 +30,19 @@ namespace Diplom
             string password = textBoxPassword.Text;
 
             CLogin cLogin = new CLogin();
-            if (cLogin.Login(login, password))
+            var result = cLogin.Login(login, password);
+
+            if (!result.Success)
             {
-                UserSession session = new UserSession();
-                int UserId = session.GetUserIdByLogin(login);
-                this.Hide();
-                MainForm mainForm = new MainForm(UserId);
-                mainForm.Show();
+                MessageBox.Show(result.ErrorMessage, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            this.Hide();
+            MainForm mainForm = new MainForm(result.UserId, result.Role);
+            mainForm.Show();
         }
+
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {

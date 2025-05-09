@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace Diplom
 {
@@ -14,7 +15,7 @@ namespace Diplom
         private const int InactivityThreshold = 40; 
         private bool isMonitoring = true;
         private readonly MainForm mainForm;
-        private DateTime lastInteraction = DateTime.Now;
+        
 
         public InactivityMonitor(WorkSessionManager sessionManager, MainForm form)
         {
@@ -31,13 +32,35 @@ namespace Diplom
 
             HookActivityEvents();
         }
+        [StructLayout(LayoutKind.Sequential)]
+        private struct LASTINPUTINFO
+        {
+            public uint cbSize;
+            public uint dwTime;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        private int GetIdleTimeInSeconds()
+        {
+            LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
+            lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
+            GetLastInputInfo(ref lastInputInfo);
+
+            uint lastInputTick = lastInputInfo.dwTime;
+            uint currentTick = (uint)Environment.TickCount;
+
+            return (int)((currentTick - lastInputTick) / 1000);
+        }
+
 
         private void CheckInactivity(object sender, EventArgs e)
         {
             if (mainForm.IsLunchBreak || !workSession.IsRunning || !isMonitoring || wasPausedByInactivity)
                 return;
 
-            int idleTime = (int)(DateTime.Now - lastInteraction).TotalSeconds;
+            int idleTime = GetIdleTimeInSeconds();
 
             if (idleTime >= InactivityThreshold)
             {
@@ -56,19 +79,13 @@ namespace Diplom
             wasPausedByInactivity = false;
         }
 
-        public void ResetIdleTimer()
-        {
-            lastInteraction = DateTime.Now;
-        }
-
         public void PauseMonitoring() => isMonitoring = false;
         public void ResumeMonitoring() => isMonitoring = true;
-        public bool IsMonitoringActive => isMonitoring;
-
+    
         private void HookActivityEvents()
         {
             Application.Idle += (s, e) => ResumeIfPaused();
-            Application.AddMessageFilter(new ActivityMessageFilter(this));
+           
         }
 
         private void ResumeIfPaused()

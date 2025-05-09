@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Diplom
 {
     internal class Encryption
     {
-      
         public string GenerateSalt()
         {
             using (var rng = new RNGCryptoServiceProvider())
@@ -19,24 +16,23 @@ namespace Diplom
                 return Convert.ToBase64String(saltBytes);
             }
         }
-        public bool VerifyPassword(string inputPassword, string storedHash, string storedSalt)
+
+        public string HashPassword(string password, string salt)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                byte[] saltBytes = Convert.FromBase64String(storedSalt);
-              
-                byte[] passwordBytes = Encoding.UTF8.GetBytes(inputPassword);
-               
+                byte[] saltBytes = Convert.FromBase64String(salt);
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
                 byte[] combinedBytes = passwordBytes.Concat(saltBytes).ToArray();
-                
                 byte[] hashBytes = sha256.ComputeHash(combinedBytes);
-              
-                string hashedInput = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-
-                
-                return hashedInput == storedHash;
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
             }
         }
 
+        public bool VerifyPassword(string inputPassword, string storedHash, string storedSalt)
+        {
+            string hashedInput = HashPassword(inputPassword, storedSalt);
+            return hashedInput == storedHash;
+        }
     }
 }

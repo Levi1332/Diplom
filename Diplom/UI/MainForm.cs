@@ -6,6 +6,8 @@ using Diplom.Services.Calendar;
 using Diplom.Core.Service;
 using Diplom.Properties;
 using Diplom.Core.Setting;
+using System.Data;
+using Diplom.Helpers;
 
 namespace Diplom
 {
@@ -22,18 +24,24 @@ namespace Diplom
         private bool lunchPauseActive = false;
         private bool isLunchBreak = false;
         private ToolStripMenuItem openPdfAfterExportMenuItem;
+        private string _role;
+        private DateTime lastLunchDay = LunchPersistenceHelper.LoadLunchDay();
 
-        public MainForm(int userId)
+        public MainForm(int userId, string role)
         {
             InitializeComponent();
             InitializeTrayIcon();
             this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
             this.userId = userId;
+            _role = role;
         }
+        
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             LoadUserId();
             InitializeWorkSession();
+          
 
             _settings = SettingsManager.LoadSettings();
             ThemeManager.ApplyTheme(this, _settings.Theme, menuOptions, lblTimer, btnStartWork, btnStopWork);
@@ -48,7 +56,11 @@ namespace Diplom
             timer1.Interval = 60000;
             timer1.Tick += Timer1_Tick;
             timer1.Start();
+
+
+            adminToolStripMenuItem.Visible = (_role == "admin");
         }
+     
 
         private void SetTheme(string theme, ToolStripMenuItem system, ToolStripMenuItem light)
         {
@@ -62,7 +74,6 @@ namespace Diplom
             ThemeManager.ApplyTheme(this, theme, menuOptions, lblTimer, btnStartWork, btnStopWork);
 
         }
-
         private void InitInterfaceMenu()
         {
             var interfaceMenu = new ToolStripMenuItem("🎨 Интерфейс");
@@ -232,12 +243,19 @@ namespace Diplom
         private void Timer1_Tick(object sender, EventArgs e)
         {
             var now = DateTime.Now.TimeOfDay;
+            var today = DateTime.Today;
             var lunchStart = _settings.LunchTime;
             var lunchEnd = lunchStart + _settings.LunchDuration;
 
+            if (lastLunchDay != today)
+            {
+                lastLunchDay = today;
+                lunchPauseActive = false;
+                isLunchBreak = false;
+            }
+
             if (!lunchPauseActive && now >= lunchStart && now <= lunchEnd)
             {
-
                 lunchPauseActive = true;
                 isLunchBreak = true;
 
@@ -247,11 +265,15 @@ namespace Diplom
 
                 lblTimer.Text = "⏳ Сейчас обеденный перерыв";
                 lblTimer.ForeColor = Color.OrangeRed;
-                ShowNotification("Обеденный перерыв", $"Начался обеденный перерыв он продлится до {lunchEnd} ");
+                lblTimer.AutoSize = true;
+                lblTimer.Location = new Point((this.ClientSize.Width - lblTimer.Width) / 2, lblTimer.Location.Y);
+
+                ShowNotification("Обеденный перерыв", $"Начался обеденный перерыв и продлится до {lunchEnd} ");
+                LunchPersistenceHelper.SaveLunchDay(DateTime.Today);
+
             }
-            else if (lunchPauseActive && now > lunchEnd)
+            else if (lunchPauseActive && now > lunchEnd && isLunchBreak)
             {
-                lunchPauseActive = false;
                 isLunchBreak = false;
 
                 workSession.Resume();
@@ -260,9 +282,10 @@ namespace Diplom
                 workSession.Enable();
 
                 inactivityMonitor.ResumeMonitoring();
-                inactivityMonitor.ResetIdleTimer();
+               
 
                 lblTimer.ForeColor = Color.White;
+                ReloadUI();
             }
         }
 
@@ -370,7 +393,7 @@ namespace Diplom
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                if (workSession.IsRunning)
+                if (workSession != null && workSession.IsRunning)
                 {
                     e.Cancel = true;
                     Hide();
@@ -379,8 +402,16 @@ namespace Diplom
                 }
                 else
                 {
-                    ExitApplication(sender, e);
+                    trayIcon.Visible = false;
+                    trayIcon.Dispose();
+                    Application.Exit();
                 }
+            }
+            else
+            {
+                trayIcon.Visible = false;
+                trayIcon.Dispose();
+                base.OnFormClosing(e);
             }
         }
 
@@ -416,7 +447,6 @@ namespace Diplom
             menuSettings.DropDownItems.Add(languageGroup);
 
         }
-
 
         private void menuProfile_Click(object sender, EventArgs e)
         {
@@ -460,8 +490,6 @@ namespace Diplom
                 _settings = settings;
             }
         }
-
-        public bool IsLunchBreak => isLunchBreak;
 
         private void settingsPdfTemplate_Click(object sender, EventArgs e)
         {
@@ -512,5 +540,12 @@ namespace Diplom
                 Application.Restart();
             }
         }
+
+        private void adminToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AdminForm adminForm = new AdminForm();
+            adminForm.Show();
+        }
+        public bool IsLunchBreak => isLunchBreak;
     }
 }

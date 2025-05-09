@@ -1,300 +1,371 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Diplom.ApplicationRepository">
-    <Position X="0.5" Y="2" Width="1.5" />
+  <Class Name="Diplom.ApplicationRepository" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAABAAACAACAAAAQAAAAAAAAgCAAAAAAA=</HashCode>
       <FileName>Repositories\ApplicationRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.ApplicationTracker">
-    <Position X="6.5" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.ApplicationTracker" Collapsed="true">
+    <Position X="8" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAACAAAAKAgAAAAAoAAABAAAAAAAIAAAAgA=</HashCode>
       <FileName>Core\ApplicationTracker.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.CBanInfo">
-    <Position X="11" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.CBanInfo" Collapsed="true">
+    <Position X="6.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
       <FileName>Core\CBanInfo.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.CLogin">
-    <Position X="12.5" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.CLogin" Collapsed="true">
+    <Position X="8" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAgAgAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>Security\CLogin.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.DatabaseConfig">
-    <Position X="11" Y="2.25" Width="1.5" />
+  <Class Name="Diplom.DatabaseConfig" Collapsed="true">
+    <Position X="5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Core\DatabaseConfig.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.Encryption">
-    <Position X="9.5" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.Encryption" Collapsed="true">
+    <Position X="0.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAACAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Core\Encryption.cs</FileName>
+      <HashCode>AAAAAAAAAAAEAAAAAAACAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\Encryption.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.InactivityMonitor">
-    <Position X="12.5" Y="2.25" Width="1.5" />
+  <Class Name="Diplom.InactivityMonitor" Collapsed="true">
+    <Position X="9.5" Y="1.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Struct Name="Diplom.InactivityMonitor.LASTINPUTINFO">
-        <TypeIdentifier>
-          <NewMemberFileName>Monitoring\InactivityMonitor.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>QAAAAACAAAAAEBEAAAEAAgAIAAAAAAAAAAAAAACAAAA=</HashCode>
+      <HashCode>QAAAAgCIAAAAUAEAggEAAgBAAAgAABAAAAAABACAQAA=</HashCode>
       <FileName>Monitoring\InactivityMonitor.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.UserSession">
-    <Position X="8" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.UserSession" Collapsed="true">
+    <Position X="2" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Security\UserSession.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.WorkSessionManager">
-    <Position X="14" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.WorkSessionManager" Collapsed="true">
+    <Position X="9.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAApgCAAAAAAIEAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAACAACAAAApgCAAAAAAIEAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>Monitoring\WorkSessionManager.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.WorkTimer">
-    <Position X="14" Y="4" Width="1.5" />
+  <Class Name="Diplom.WorkTimer" Collapsed="true">
+    <Position X="9.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQgAAACACAAAABQAAAAQAAAAAAAAAAAIIAIAAgAAAA=</HashCode>
+      <HashCode>AAwgAAACACAAAABQAAAASAAAIAAAAAAAIIAoAAgAIAA=</HashCode>
       <FileName>Monitoring\WorkTimer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.ApplicationBlocker">
-    <Position X="3.5" Y="2" Width="1.5" />
+  <Class Name="Diplom.ApplicationBlocker" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAEgABACAAAACAAAAAAAAAACABAAAAAAAAAAAAA=</HashCode>
       <FileName>Core\ApplicationBlocker.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="BlockedAppsRepository">
-    <Position X="2" Y="2" Width="1.5" />
+  <Class Name="BlockedAppsRepository" Collapsed="true">
+    <Position X="2" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Repositories\BlockedAppsRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.NativeMethods">
-    <Position X="9.5" Y="2" Width="1.5" />
+  <Class Name="Diplom.NativeMethods" Collapsed="true">
+    <Position X="6.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAAACAAAAAAAAAAAAI=</HashCode>
       <FileName>Core\NativeMethods.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.BlockedApp">
-    <Position X="8" Y="2.25" Width="1.5" />
+  <Class Name="Diplom.BlockedApp" Collapsed="true">
+    <Position X="6.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
       <FileName>Core\BlockedApp.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.ViolationRepository">
-    <Position X="5" Y="2" Width="1.5" />
+  <Class Name="Diplom.ViolationRepository" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAgAAAAACAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Repositories\ViolationRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.Services.Calendar.CalendarRenderer">
-    <Position X="9.5" Y="3.75" Width="1.5" />
+  <Class Name="Diplom.Services.Calendar.CalendarRenderer" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Calendar\CalendarRenderer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.UserDataService" BaseTypeListCollapsed="true">
-    <Position X="2" Y="4.25" Width="1.5" />
+  <Class Name="Diplom.UserDataService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAACAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Core\Service\UserDataService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.ViolationService" BaseTypeListCollapsed="true">
-    <Position X="6.5" Y="4" Width="1.5" />
+  <Class Name="Diplom.ViolationService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAgACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Core\Service\ViolationService.cs.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.WorkSessionService" BaseTypeListCollapsed="true">
-    <Position X="0.5" Y="4.75" Width="1.5" />
+  <Class Name="Diplom.WorkSessionService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAEAIAAAAAAAAAAA=</HashCode>
       <FileName>Core\Service\WorkSessionService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.DayTileStyle">
-    <Position X="8" Y="3.75" Width="1.5" />
+  <Class Name="Diplom.DayTileStyle" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAiAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Delegate\Drawing\DayTileStyle.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.DayTile">
-    <Position X="3.5" Y="4.75" Width="1.5" />
+  <Class Name="Diplom.DayTile" Collapsed="true">
+    <Position X="5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACgAgIQAAFEAAAAAAAAAA=</HashCode>
       <FileName>Delegate\Drawing\DayTitle.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.UI.Components.DayTile">
-    <Position X="9.5" Y="5.25" Width="1.5" />
+  <Class Name="Diplom.UI.Components.DayTile" Collapsed="true">
+    <Position X="2" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>UI\Components\DayTile.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DoubleBufferedFlowLayoutPanel">
-    <Position X="11" Y="4.75" Width="1.5" />
+  <Class Name="DoubleBufferedFlowLayoutPanel" Collapsed="true">
+    <Position X="8" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>UI\Components\DoubleBufferedFlowLayoutPanel .cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.OvertimeSession">
-    <Position X="15.5" Y="3.75" Width="1.5" />
+  <Class Name="Diplom.OvertimeSession" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAQAAAAAAAAAAAAgAIAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Core\OvertimeSession.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.OvertimeService" BaseTypeListCollapsed="true">
-    <Position X="15.5" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.OvertimeService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Core\Service\OvertimeService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.Core.Service.PdfReportService" BaseTypeListCollapsed="true">
-    <Position X="17" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.Core.Service.PdfReportService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIgAAACQEAAAFAAAAAAACAAAAAAAAAAAAACAAAA=</HashCode>
       <FileName>Core\Service\PdfReportService .cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diplom.Core.Violation">
-    <Position X="15.5" Y="2.25" Width="1.5" />
+  <Class Name="Diplom.Core.Violation" Collapsed="true">
+    <Position X="3.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAABAQAAAAAAAAA=</HashCode>
       <FileName>Core\Violation.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diplom.Core.WorkSession">
-    <Position X="15.5" Y="5.5" Width="1.5" />
+  <Class Name="Diplom.Core.WorkSession" Collapsed="true">
+    <Position X="8" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAIAAgAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Core\WorkSession.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="Diplom.IApplicationRepository">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+  <Class Name="Diplom.WorkTimeSettings" Collapsed="true">
+    <Position X="2" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAhAAGAAAABIQAEAAAAAAAACEIAAAAAAgAYAAQAA=</HashCode>
+      <FileName>Core\Setting\WorkTimeSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SettingsManager" Collapsed="true">
+    <Position X="5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAgAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Core\Setting\SettingsManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.Core.Setting.ThemeManager" Collapsed="true">
+    <Position X="3.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Core\Setting\ThemeManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.ActivityMessageFilter" Collapsed="true">
+    <Position X="9.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Monitoring\ActivityMessageFilter .cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.189" />
+  </Class>
+  <Class Name="Diplom.UI.ExportPeriodForm" Collapsed="true">
+    <Position X="5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAEgmQEEAAAAACAAAhCAIACAAgAAAAUAAIAQAA=</HashCode>
+      <FileName>UI\ExportPeriodForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.UI.PdfTemplateForm" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAGAAAAEAAACAAAACAAAAAAAAAABAAAIAAAA=</HashCode>
+      <FileName>UI\PdfTemplateForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.UI.ProgressForm" Collapsed="true">
+    <Position X="6.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQACAAAAAAAACSAAACAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>UI\ProgressForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.UI.UserProfileForm" Collapsed="true">
+    <Position X="2" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQQIICAACABEAAESJaCAQAWAUEIAAAARAAgAQSAAAA=</HashCode>
+      <FileName>UI\UserProfileForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.LoginForm" Collapsed="true">
+    <Position X="3.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAgAAAEBACAAQBAAAACIIAQChAAAAAAAAQAAAABAAAA=</HashCode>
+      <FileName>UI\LoginForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.MainForm" Collapsed="true">
+    <Position X="3.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>WA4YJIBhAagBYAxYiCioUgAHC0AICAABRAABoAOAEIQ=</HashCode>
+      <FileName>UI\MainForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diplom.WorkTimeSettingsForm" Collapsed="true">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAECAAEBAAAACAAABCAAAIABABAAAAAAIAAAA=</HashCode>
+      <FileName>UI\WorkTimeSettingsForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Diplom.IApplicationRepository" Collapsed="true">
+    <Position X="11" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IApplicationRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IApplicationBlocker">
-    <Position X="2" Y="0.5" Width="1.5" />
+  <Interface Name="Diplom.IApplicationBlocker" Collapsed="true">
+    <Position X="11" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IApplicationBlocker.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IBlockedAppsRepository">
-    <Position X="3.5" Y="0.5" Width="1.5" />
+  <Interface Name="Diplom.IBlockedAppsRepository" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Interfaces\IBlockedAppsRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IViolationRepository">
-    <Position X="5" Y="0.5" Width="1.5" />
+  <Interface Name="Diplom.IViolationRepository" Collapsed="true">
+    <Position X="11" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Interfaces\IViolationRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.Services.Calendar.ICalendarRenderer">
+  <Interface Name="Diplom.Services.Calendar.ICalendarRenderer" Collapsed="true">
     <Position X="11" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Calendar\ICalendarRenderer.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IUserDataService">
-    <Position X="5" Y="5.5" Width="1.5" />
+  <Interface Name="Diplom.IUserDataService" Collapsed="true">
+    <Position X="12.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IUserDataService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IViolationService">
-    <Position X="8" Y="5.25" Width="1.5" />
+  <Interface Name="Diplom.IViolationService" Collapsed="true">
+    <Position X="12.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IViolationService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IWorkSessionService">
-    <Position X="6.5" Y="6.25" Width="1.5" />
+  <Interface Name="Diplom.IWorkSessionService" Collapsed="true">
+    <Position X="12.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IWorkSessionService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IOvertimeService">
-    <Position X="17" Y="3.75" Width="1.5" />
+  <Interface Name="Diplom.IOvertimeService" Collapsed="true">
+    <Position X="12.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IOvertimeService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Diplom.IPdfReportService">
-    <Position X="17" Y="5" Width="1.5" />
+  <Interface Name="Diplom.IPdfReportService" Collapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IPdfReportService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="Diplom.ExportRange">
-    <Position X="11" Y="6.25" Width="1.5" />
+  <Enum Name="Diplom.ExportRange" Collapsed="true">
+    <Position X="11" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgBAAAAAAAAAAAAAAAAAAAAAAEAAAAAIAAAAA=</HashCode>
       <FileName>Enum\ExportRange.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Delegate Name="Diplom.DayTileStylingDelegate">
-    <Position X="5" Y="4" Width="1.5" />
+  <Delegate Name="Diplom.DayTileStylingDelegate" Collapsed="true">
+    <Position X="12.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAgAAAAAAAAAAgAAAAAAABAAAAAgAAAAAAAAA=</HashCode>
       <FileName>Delegate\DayTileStylingDelegate.cs</FileName>

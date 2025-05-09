@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Calendar\CalendarRenderer.cs" />
     <Compile Include="Calendar\ICalendarRenderer.cs" />
+    <Compile Include="Core\Service\UserService.cs" />
     <Compile Include="Core\Setting\ThemeManager.cs" />
     <Compile Include="Enum\ExportRange.cs" />
     <Compile Include="Core\ApplicationBlocker.cs" />
@@ -146,12 +147,13 @@
     <Compile Include="Delegate\Drawing\DayTitle.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Helpers\LunchPersistenceHelper.cs" />
     <Compile Include="Interfaces\IOvertimeService.cs" />
     <Compile Include="Interfaces\IPdfReportService.cs" />
     <Compile Include="Interfaces\IUserDataService.cs" />
+    <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Interfaces\IViolationService.cs" />
     <Compile Include="Interfaces\IWorkSessionService.cs" />
-    <Compile Include="Monitoring\ActivityMessageFilter .cs" />
     <Compile Include="Repositories\ApplicationRepository.cs" />
     <Compile Include="Core\ApplicationTracker.cs" />
     <Compile Include="Core\BlockedApp.cs" />
@@ -163,19 +165,38 @@
     <Compile Include="Monitoring\InactivityMonitor.cs" />
     <Compile Include="Interfaces\IViolationRepository.cs" />
     <Compile Include="Core\NativeMethods.cs" />
+    <Compile Include="Security\LoginResult.cs" />
     <Compile Include="Security\UserSession.cs" />
     <Compile Include="Repositories\ViolationRepository.cs" />
     <Compile Include="Monitoring\WorkSessionManager.cs" />
     <Compile Include="Monitoring\WorkTimer.cs" />
     <Compile Include="Core\DatabaseConfig.cs" />
     <Compile Include="Security\CLogin.cs" />
-    <Compile Include="Core\Encryption.cs" />
+    <Compile Include="Security\Encryption.cs" />
     <Compile Include="Core\Setting\SettingsManager.cs" />
     <Compile Include="Core\Setting\WorkTimeSettings.cs" />
     <Compile Include="Strings.en.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.en.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\AdminForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AdminForm.Designer.cs">
+      <DependentUpon>AdminForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\BanCodesInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\BanCodesInfoForm.Designer.cs">
+      <DependentUpon>BanCodesInfoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\BanReasonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\BanReasonForm.Designer.cs">
+      <DependentUpon>BanReasonForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Components\DayTile.cs">
       <SubType>Component</SubType>
@@ -215,6 +236,12 @@
     <Compile Include="UI\ProgressForm.Designer.cs">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\UserEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\UserEditForm.Designer.cs">
+      <DependentUpon>UserEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\UserProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,6 +259,15 @@
       <LastGenOutput>Strings.en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Strings.ru.resx" />
+    <EmbeddedResource Include="UI\AdminForm.resx">
+      <DependentUpon>AdminForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\BanCodesInfoForm.resx">
+      <DependentUpon>BanCodesInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\BanReasonForm.resx">
+      <DependentUpon>BanReasonForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ExportPeriodForm.resx">
       <DependentUpon>ExportPeriodForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -258,6 +294,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UserEditForm.resx">
+      <DependentUpon>UserEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UserProfileForm.resx">
       <DependentUpon>UserProfileForm.cs</DependentUpon>

@@ -29,10 +29,10 @@ namespace Diplom.UI
             this.btnPrevMonth = new System.Windows.Forms.Button();
             this.btnNextMonth = new System.Windows.Forms.Button();
             this.lblMonthYear = new System.Windows.Forms.Label();
-            this.flowCalendar = new DoubleBufferedFlowLayoutPanel();
             this.lblViolationsHeader = new System.Windows.Forms.Label();
             this.dataGridViolations = new System.Windows.Forms.DataGridView();
             this.btnExportPDF = new System.Windows.Forms.Button();
+            this.flowCalendar = new DoubleBufferedFlowLayoutPanel();
             this.scrollPanel.SuspendLayout();
             this.topMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViolations)).BeginInit();
@@ -57,7 +57,7 @@ namespace Diplom.UI
             this.scrollPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scrollPanel.Location = new System.Drawing.Point(0, 0);
             this.scrollPanel.Name = "scrollPanel";
-            this.scrollPanel.Size = new System.Drawing.Size(800, 451);
+            this.scrollPanel.Size = new System.Drawing.Size(800, 603);
             this.scrollPanel.TabIndex = 0;
             // 
             // topMenu
@@ -104,7 +104,7 @@ namespace Diplom.UI
             // 
             this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblWelcome.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblWelcome.Location = new System.Drawing.Point(20, 40);
+            this.lblWelcome.Location = new System.Drawing.Point(12, 44);
             this.lblWelcome.Name = "lblWelcome";
             this.lblWelcome.Size = new System.Drawing.Size(700, 37);
             this.lblWelcome.TabIndex = 1;
@@ -113,7 +113,7 @@ namespace Diplom.UI
             // lblFullName
             // 
             this.lblFullName.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblFullName.Location = new System.Drawing.Point(20, 85);
+            this.lblFullName.Location = new System.Drawing.Point(12, 89);
             this.lblFullName.Name = "lblFullName";
             this.lblFullName.Size = new System.Drawing.Size(500, 20);
             this.lblFullName.TabIndex = 2;
@@ -122,7 +122,7 @@ namespace Diplom.UI
             // lblTotalWorkTime
             // 
             this.lblTotalWorkTime.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblTotalWorkTime.Location = new System.Drawing.Point(20, 110);
+            this.lblTotalWorkTime.Location = new System.Drawing.Point(12, 114);
             this.lblTotalWorkTime.Name = "lblTotalWorkTime";
             this.lblTotalWorkTime.Size = new System.Drawing.Size(500, 20);
             this.lblTotalWorkTime.TabIndex = 3;
@@ -132,7 +132,7 @@ namespace Diplom.UI
             // 
             this.lblSessionsHeader.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblSessionsHeader.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblSessionsHeader.Location = new System.Drawing.Point(20, 140);
+            this.lblSessionsHeader.Location = new System.Drawing.Point(12, 144);
             this.lblSessionsHeader.Name = "lblSessionsHeader";
             this.lblSessionsHeader.Size = new System.Drawing.Size(300, 25);
             this.lblSessionsHeader.TabIndex = 4;
@@ -141,7 +141,7 @@ namespace Diplom.UI
             // btnPrevMonth
             // 
             this.btnPrevMonth.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnPrevMonth.Location = new System.Drawing.Point(20, 170);
+            this.btnPrevMonth.Location = new System.Drawing.Point(12, 174);
             this.btnPrevMonth.Name = "btnPrevMonth";
             this.btnPrevMonth.Size = new System.Drawing.Size(40, 30);
             this.btnPrevMonth.TabIndex = 5;
@@ -150,7 +150,7 @@ namespace Diplom.UI
             // btnNextMonth
             // 
             this.btnNextMonth.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnNextMonth.Location = new System.Drawing.Point(280, 170);
+            this.btnNextMonth.Location = new System.Drawing.Point(272, 174);
             this.btnNextMonth.Name = "btnNextMonth";
             this.btnNextMonth.Size = new System.Drawing.Size(40, 30);
             this.btnNextMonth.TabIndex = 6;
@@ -160,26 +160,18 @@ namespace Diplom.UI
             // 
             this.lblMonthYear.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblMonthYear.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblMonthYear.Location = new System.Drawing.Point(70, 170);
+            this.lblMonthYear.Location = new System.Drawing.Point(62, 174);
             this.lblMonthYear.Name = "lblMonthYear";
             this.lblMonthYear.Size = new System.Drawing.Size(200, 30);
             this.lblMonthYear.TabIndex = 7;
             this.lblMonthYear.Text = "Месяц Год";
             this.lblMonthYear.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // flowCalendar
-            // 
-            this.flowCalendar.BackColor = System.Drawing.Color.Transparent;
-            this.flowCalendar.Location = new System.Drawing.Point(20, 210);
-            this.flowCalendar.Name = "flowCalendar";
-            this.flowCalendar.Size = new System.Drawing.Size(705, 471);
-            this.flowCalendar.TabIndex = 8;
-            // 
             // lblViolationsHeader
             // 
             this.lblViolationsHeader.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblViolationsHeader.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblViolationsHeader.Location = new System.Drawing.Point(20, 696);
+            this.lblViolationsHeader.Location = new System.Drawing.Point(12, 866);
             this.lblViolationsHeader.Name = "lblViolationsHeader";
             this.lblViolationsHeader.Size = new System.Drawing.Size(300, 25);
             this.lblViolationsHeader.TabIndex = 9;
@@ -190,7 +182,7 @@ namespace Diplom.UI
             this.dataGridViolations.AllowUserToAddRows = false;
             this.dataGridViolations.AllowUserToDeleteRows = false;
             this.dataGridViolations.ColumnHeadersHeight = 40;
-            this.dataGridViolations.Location = new System.Drawing.Point(20, 726);
+            this.dataGridViolations.Location = new System.Drawing.Point(12, 896);
             this.dataGridViolations.Name = "dataGridViolations";
             this.dataGridViolations.ReadOnly = true;
             this.dataGridViolations.RowHeadersWidth = 51;
@@ -199,17 +191,25 @@ namespace Diplom.UI
             // 
             // btnExportPDF
             // 
-            this.btnExportPDF.Location = new System.Drawing.Point(20, 936);
+            this.btnExportPDF.Location = new System.Drawing.Point(12, 1106);
             this.btnExportPDF.Name = "btnExportPDF";
             this.btnExportPDF.Size = new System.Drawing.Size(705, 40);
             this.btnExportPDF.TabIndex = 11;
             this.btnExportPDF.Text = "Экспортировать в PDF";
             this.btnExportPDF.Click += new System.EventHandler(this.btnExportPDF_Click);
             // 
+            // flowCalendar
+            // 
+            this.flowCalendar.BackColor = System.Drawing.Color.Transparent;
+            this.flowCalendar.Location = new System.Drawing.Point(12, 214);
+            this.flowCalendar.Name = "flowCalendar";
+            this.flowCalendar.Size = new System.Drawing.Size(705, 649);
+            this.flowCalendar.TabIndex = 8;
+            // 
             // UserProfileForm
             // 
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(800, 451);
+            this.ClientSize = new System.Drawing.Size(800, 603);
             this.Controls.Add(this.scrollPanel);
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.topMenu;

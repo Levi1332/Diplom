@@ -49,6 +49,7 @@
             this.settingsPdfTemplate = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsDefaultPath = new System.Windows.Forms.ToolStripMenuItem();
             this.menuLogout = new System.Windows.Forms.ToolStripMenuItem();
+            this.adminToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.topMenu.SuspendLayout();
             this.SuspendLayout();
@@ -104,7 +105,8 @@
             this.menuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuProfile,
             this.menuSettings,
-            this.menuLogout});
+            this.menuLogout,
+            this.adminToolStripMenuItem});
             this.menuOptions.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.menuOptions.Name = "menuOptions";
             this.menuOptions.Size = new System.Drawing.Size(79, 24);
@@ -136,7 +138,7 @@
             this.settingsLunchTime,
             this.settingsLunchSession});
             this.settingsWorkGroup.Name = "settingsWorkGroup";
-            this.settingsWorkGroup.Size = new System.Drawing.Size(224, 26);
+            this.settingsWorkGroup.Size = new System.Drawing.Size(223, 26);
             this.settingsWorkGroup.Text = "🕓 Рабочее время";
             // 
             // settingsLunchTime
@@ -159,7 +161,7 @@
             this.settingsPdfTemplate,
             this.settingsDefaultPath});
             this.settingsPdfGroup.Name = "settingsPdfGroup";
-            this.settingsPdfGroup.Size = new System.Drawing.Size(224, 26);
+            this.settingsPdfGroup.Size = new System.Drawing.Size(223, 26);
             this.settingsPdfGroup.Text = "📄 PDF и экспорт";
             // 
             // settingsPdfTemplate
@@ -184,6 +186,13 @@
             this.menuLogout.Text = "🚪 Выйти из аккаунта";
             this.menuLogout.Click += new System.EventHandler(this.menuLogout_Click);
             this.menuLogout.Paint += new System.Windows.Forms.PaintEventHandler(this.RemoveBackground);
+            // 
+            // adminToolStripMenuItem
+            // 
+            this.adminToolStripMenuItem.Name = "adminToolStripMenuItem";
+            this.adminToolStripMenuItem.Size = new System.Drawing.Size(245, 26);
+            this.adminToolStripMenuItem.Text = "Админ панель";
+            this.adminToolStripMenuItem.Click += new System.EventHandler(this.adminToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -215,5 +224,6 @@
             ((System.Windows.Forms.ToolStripMenuItem)sender).BackColor = System.Drawing.Color.Transparent;
         }
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripMenuItem adminToolStripMenuItem;
     }
 }
