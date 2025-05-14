@@ -8,6 +8,11 @@ using Diplom.Properties;
 using Diplom.Core.Setting;
 using System.Data;
 using Diplom.Helpers;
+using Diplom.Core.AntiCheat.Analyzers;
+using Diplom.Core.AntiCheat.Interfaces;
+using Diplom.Core.AntiCheat.Monitors;
+using Diplom.Core.AntiCheat.Services;
+using System.Collections.Generic;
 
 namespace Diplom
 {
@@ -15,17 +20,18 @@ namespace Diplom
     {
         private string connectionString = DatabaseConfig.connectionString;
         private WorkSessionManager workSession;
-        private int userId;
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
         private InactivityMonitor inactivityMonitor;
         private ApplicationTracker appTracker;
         private WorkTimeSettings _settings;
+        private ToolStripMenuItem openPdfAfterExportMenuItem;
+        private HiddenAntiCheatService _antiCheatService;
+        private DateTime lastLunchDay = LunchPersistenceHelper.LoadLunchDay();
+        private int userId;
+        private string _role; 
         private bool lunchPauseActive = false;
         private bool isLunchBreak = false;
-        private ToolStripMenuItem openPdfAfterExportMenuItem;
-        private string _role;
-        private DateTime lastLunchDay = LunchPersistenceHelper.LoadLunchDay();
 
         public MainForm(int userId, string role)
         {
@@ -35,7 +41,6 @@ namespace Diplom
             this.userId = userId;
             _role = role;
         }
-        
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -59,8 +64,8 @@ namespace Diplom
 
 
             adminToolStripMenuItem.Visible = (_role == "admin");
+           
         }
-     
 
         private void SetTheme(string theme, ToolStripMenuItem system, ToolStripMenuItem light)
         {
@@ -74,6 +79,7 @@ namespace Diplom
             ThemeManager.ApplyTheme(this, theme, menuOptions, lblTimer, btnStartWork, btnStopWork);
 
         }
+
         private void InitInterfaceMenu()
         {
             var interfaceMenu = new ToolStripMenuItem("🎨 Интерфейс");
@@ -170,6 +176,7 @@ namespace Diplom
 
             menuSettings.DropDownItems.Add(interfaceMenu);
         }
+
         private void InitNotificationsMenu()
         {
             var notificationsMenu = new ToolStripMenuItem("🔔 Уведомления");
@@ -217,6 +224,7 @@ namespace Diplom
 
             menuSettings.DropDownItems.Add(notificationsMenu);
         }
+
         public void ReloadUI()
         {
             Controls.Clear();
@@ -301,7 +309,7 @@ namespace Diplom
         private void InitializeWorkSession()
         {
             workSession = new WorkSessionManager(userId, lblTimer);
-            inactivityMonitor = new InactivityMonitor(workSession, this);
+            inactivityMonitor = new InactivityMonitor(workSession, this, userId);
 
             IApplicationRepository repository = new ApplicationRepository(connectionString);
             IBlockedAppsRepository blockedAppsRepo = new BlockedAppsRepository(connectionString);
@@ -323,21 +331,40 @@ namespace Diplom
         {
             workSession.Start();
             appTracker.StartTracking();
+
             if (_settings.NotifyStartDay)
             {
                 ShowNotification("Рабочий день начат", "Вы начали рабочую сессию.");
             }
+
+            var monitors = new List<IInputMonitor>
+            {
+                new MouseMonitor()
+            };
+                    var analyzers = new List<IActivityAnalyzer>
+            {
+                new MousePatternAnalyzer()
+            };
+
+            _antiCheatService = new HiddenAntiCheatService(monitors, analyzers, userId);
+            _antiCheatService.Start();
+
+            AntiCheatService.Start(_antiCheatService);
         }
 
         private void btnStopWork_Click(object sender, EventArgs e)
         {
             workSession.Stop();
             appTracker.StopTracking();
+            AntiCheatService.Stop();
+            _antiCheatService.Stop();
             if (_settings.NotifyEndDay)
             {
                 ShowNotification("Рабочий день завершён", "Вы завершили рабочую сессию.");
             }
+
         }
+
         private void ShowNotification(string title, string message)
         {
             var notifyIcon = new NotifyIcon
@@ -386,6 +413,7 @@ namespace Diplom
         private void ExitApplication(object sender, EventArgs e)
         {
             trayIcon.Visible = false;
+           
             Application.Exit();
         }
 
@@ -410,8 +438,6 @@ namespace Diplom
             else
             {
                 trayIcon.Visible = false;
-                trayIcon.Dispose();
-                base.OnFormClosing(e);
             }
         }
 

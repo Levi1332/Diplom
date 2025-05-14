@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Diplom.Helpers;
+using Diplom.Core.AntiCheat.Services;
+using Diplom.Core.AntiCheat.Analyzers;
+using Diplom.Core.AntiCheat.Interfaces;
+using Diplom.Core.AntiCheat.Monitors;
+using System.Collections.Generic;
 
 namespace Diplom
 {
@@ -11,26 +17,24 @@ namespace Diplom
         private bool wasPaused = false;
         private bool wasPausedByInactivity = false;
         private WorkTimeSettings _settings;
-
         private const int InactivityThreshold = 40; 
         private bool isMonitoring = true;
         private readonly MainForm mainForm;
-        
-
-        public InactivityMonitor(WorkSessionManager sessionManager, MainForm form)
+       
+        public InactivityMonitor(WorkSessionManager sessionManager, MainForm form, int userId)
         {
             workSession = sessionManager;
             mainForm = form;
             _settings = SettingsManager.LoadSettings();
 
-            inactivityTimer = new Timer
-            {
-                Interval = 1000
-            };
+            inactivityTimer = new Timer { Interval = 1000 };
             inactivityTimer.Tick += CheckInactivity;
             inactivityTimer.Start();
 
             HookActivityEvents();
+
+            
+            
         }
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
@@ -94,8 +98,11 @@ namespace Diplom
             {
                 workSession.Resume();
                 wasPaused = false;
-                wasPausedByInactivity = false; 
-                MessageBox.Show("Рабочий таймер продолжен.", "Возобновление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                wasPausedByInactivity = false;
+                if (_settings.NotifyViolations)
+                {
+                    MessageBox.Show("Рабочий таймер продолжен.", "Возобновление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
     }

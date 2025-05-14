@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 using Diplom.Security;
 using Diplom.UI;
 
@@ -60,7 +62,6 @@ namespace Diplom.Core.Service
                     {
                         return new LoginResult
                         {
-                            //UserId = removed
                             Login = reader["Login"].ToString(),
                             Role = reader["Role"].ToString(),
                             IsBanned = Convert.ToBoolean(reader["IsBanned"])
@@ -105,7 +106,6 @@ namespace Diplom.Core.Service
             }
         }
 
-      
         public List<BanReasonItem> GetBanReasons()
         {
             var list = new List<BanReasonItem>();
@@ -156,6 +156,78 @@ namespace Diplom.Core.Service
                 return result;
             }
         }
+        public bool ValidateFields(string login, string fullName, string email, string passwordHash, string salt, bool isEditMode)
+        {
+            if (string.IsNullOrWhiteSpace(login) ||
+                string.IsNullOrWhiteSpace(fullName) ||
+                string.IsNullOrWhiteSpace(email))
+            {
+                MessageBox.Show("Пожалуйста, заполните все обязательные поля.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
+            if (!IsValidEmail(email))
+            {
+                MessageBox.Show("Некорректный формат электронной почты.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (!isEditMode && (string.IsNullOrWhiteSpace(passwordHash) || string.IsNullOrWhiteSpace(salt)))
+            {
+                MessageBox.Show("Сначала сгенерируйте хеш пароля.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        public void SaveUserToDatabase(string login, string fullName, string email, string passwordHash, string salt, bool isEditMode, bool isBanned)
+        {
+            if (!IsValidEmail(email))
+            {
+                MessageBox.Show("Некорректный формат электронной почты. Данные не были сохранены.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                SqlCommand command;
+
+                if (isEditMode)
+                {
+                    command = new SqlCommand(@"
+                UPDATE Users 
+                SET FullName = @FullName, Email = @Email, IsBanned = @IsBanned
+                WHERE Login = @Login", connection);
+                }
+                else
+                {
+                    command = new SqlCommand(@"
+                INSERT INTO Users (FullName, Login, Email, PasswordHash, Salt, CreatedAt, IsBanned)
+                VALUES (@FullName, @Login, @Email, @PasswordHash, @Salt, @CreatedAt, @IsBanned)", connection);
+
+                    command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+                    command.Parameters.AddWithValue("@Salt", salt);
+                    command.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+                }
+
+                command.Parameters.AddWithValue("@FullName", fullName);
+                command.Parameters.AddWithValue("@Login", login);
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@IsBanned", isBanned);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            var pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
+        }
     }
 }

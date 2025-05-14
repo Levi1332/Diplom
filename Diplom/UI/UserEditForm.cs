@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using Diplom.Security;
-
+using Diplom.Core.Service;
 
 namespace Diplom.UI
 {
@@ -15,6 +15,7 @@ namespace Diplom.UI
         private string _salt;
         private string _passwordHash;
         private static string connectionString = DatabaseConfig.connectionString;
+        IUserService userService = new UserService();
 
         public UserEditForm()
         {
@@ -56,51 +57,17 @@ namespace Diplom.UI
         }
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxLogin.Text) ||
-                string.IsNullOrWhiteSpace(textBoxFullName.Text) ||
-                string.IsNullOrWhiteSpace(textBoxEmail.Text))
-            {
-                MessageBox.Show("Пожалуйста, заполните все обязательные поля.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            string login = textBoxLogin.Text;
+            string fullName = textBoxFullName.Text;
+            string Email = textBoxEmail.Text;
+            bool isBaned = checkBoxIsBanned.Checked;
+            if (!userService.ValidateFields(login,fullName,Email, _passwordHash, _salt, _isEditMode)) return;
+            userService.SaveUserToDatabase(login, fullName, Email,_passwordHash,_salt,_isEditMode,isBaned );
+            FinalizeSave();
+        }
 
-            if (!_isEditMode && (string.IsNullOrWhiteSpace(_passwordHash) || string.IsNullOrWhiteSpace(_salt)))
-            {
-                MessageBox.Show("Сначала сгенерируйте хеш пароля.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                SqlCommand command;
-
-                if (_isEditMode)
-                {
-                    command = new SqlCommand(@"
-                UPDATE Users 
-                SET FullName = @FullName, Email = @Email, IsBanned = @IsBanned
-                WHERE Login = @Login", connection);
-                }
-                else
-                {
-                    command = new SqlCommand(@"
-                INSERT INTO Users (FullName, Login, Email, PasswordHash, Salt, CreatedAt, IsBanned)
-                VALUES (@FullName, @Login, @Email, @PasswordHash, @Salt, @CreatedAt, @IsBanned)", connection);
-
-                    command.Parameters.AddWithValue("@PasswordHash", _passwordHash);
-                    command.Parameters.AddWithValue("@Salt", _salt);
-                    command.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
-                }
-
-                command.Parameters.AddWithValue("@FullName", textBoxFullName.Text);
-                command.Parameters.AddWithValue("@Login", textBoxLogin.Text);
-                command.Parameters.AddWithValue("@Email", textBoxEmail.Text);
-                command.Parameters.AddWithValue("@IsBanned", checkBoxIsBanned.Checked);
-
-                command.ExecuteNonQuery();
-            }
-
+        private void FinalizeSave()
+        {
             UserModel = new LoginResult
             {
                 Login = textBoxLogin.Text,
@@ -112,6 +79,7 @@ namespace Diplom.UI
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;

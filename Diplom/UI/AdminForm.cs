@@ -55,7 +55,6 @@ namespace Diplom.UI
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                   
                     LoadUsers();
                 }
             }
