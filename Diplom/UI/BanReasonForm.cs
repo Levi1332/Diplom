@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace Diplom.UI
 {
@@ -15,6 +16,7 @@ namespace Diplom.UI
             comboBoxReasons.DataSource = reasons;
             comboBoxReasons.DisplayMember = "Reason";
             comboBoxReasons.ValueMember = "Id";
+            this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
         }
 
 

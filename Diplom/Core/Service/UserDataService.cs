@@ -46,7 +46,8 @@ namespace Diplom
                     if (result != null && int.TryParse(result.ToString(), out int seconds))
                     {
                         TimeSpan time = TimeSpan.FromSeconds(seconds);
-                        return $"{time.Hours} ч {time.Minutes} мин";
+                        return $"{(int)time.TotalHours} ч {time.Minutes} мин";
+
                     }
                 }
             }

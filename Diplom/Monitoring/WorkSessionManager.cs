@@ -9,6 +9,7 @@ namespace Diplom
         private string connectionString = DatabaseConfig.connectionString;
         private bool isRunning;
         private bool lunchBonusAdded = false;
+ 
 
         public WorkSessionManager(int userId, System.Windows.Forms.Label timerLabel) : base(timerLabel)
         {
@@ -16,7 +17,7 @@ namespace Diplom
             isRunning = false; 
         }
 
-        public void SaveWorkedTime(int workedSeconds)
+        public void SaveWorkedTime(int currentElapsedSeconds)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -25,11 +26,11 @@ namespace Diplom
                     conn.Open();
 
                     string checkQuery = @"
-                        SELECT TOP 1 SessionID, EffectiveTime 
-                        FROM WorkSessions 
-                        WHERE UserID = @UserID 
-                        AND CAST(StartTime AS DATE) = CAST(GETDATE() AS DATE) 
-                        ORDER BY StartTime DESC";
+                SELECT TOP 1 SessionID, EffectiveTime 
+                FROM WorkSessions 
+                WHERE UserID = @UserID 
+                AND CAST(StartTime AS DATE) = CAST(GETDATE() AS DATE) 
+                ORDER BY StartTime DESC";
 
                     using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                     {
@@ -39,21 +40,28 @@ namespace Diplom
                             if (reader.Read())
                             {
                                 int sessionId = reader.GetInt32(0);
-                                int effectiveTime = reader.GetInt32(1);
+                                int effectiveTimeInDb = reader.GetInt32(1);
+
+                                // 👉 Вычисляем разницу
+                                int secondsToSave = currentElapsedSeconds - effectiveTimeInDb;
+
+                                // ⛔ Ничего не сохраняем, если нет новой работы
+                                if (secondsToSave <= 0)
+                                    return;
 
                                 int maxWorkTime = 8 * 3600;
-                                int totalTime = effectiveTime + workedSeconds;
+                                int totalTime = effectiveTimeInDb + secondsToSave;
+
+                                reader.Close();
 
                                 if (totalTime <= maxWorkTime)
                                 {
-                                    reader.Close();
-                                    UpdateWorkSession(sessionId, workedSeconds, conn);
+                                    UpdateWorkSession(sessionId, secondsToSave, conn);
                                 }
                                 else
                                 {
-                                    reader.Close();
                                     int overtimeSeconds = totalTime - maxWorkTime;
-                                    int regularTime = workedSeconds - overtimeSeconds;
+                                    int regularTime = secondsToSave - overtimeSeconds;
 
                                     if (regularTime > 0)
                                     {
@@ -69,7 +77,7 @@ namespace Diplom
                             else
                             {
                                 reader.Close();
-                                CreateNewWorkSession(workedSeconds, conn);
+                                CreateNewWorkSession(currentElapsedSeconds, conn);
                             }
                         }
                     }
@@ -148,7 +156,7 @@ namespace Diplom
             if (isRunning)
             {
                 base.Stop();
-                SaveWorkedTime(secondsElapsed); 
+                SaveWorkedTime(secondsElapsed);
                 isRunning = false;
             }
         }

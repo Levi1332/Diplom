@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using QuestPDF.Infrastructure;
 
 namespace Diplom
 {
@@ -16,6 +17,7 @@ namespace Diplom
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            QuestPDF.Settings.License = LicenseType.Community;
             Application.Run(new LoginForm());
         }
     }

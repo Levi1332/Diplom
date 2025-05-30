@@ -51,6 +51,7 @@
             this.menuLogout = new System.Windows.Forms.ToolStripMenuItem();
             this.adminToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.статистикаСотрудниковToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -106,7 +107,8 @@
             this.menuProfile,
             this.menuSettings,
             this.menuLogout,
-            this.adminToolStripMenuItem});
+            this.adminToolStripMenuItem,
+            this.статистикаСотрудниковToolStripMenuItem});
             this.menuOptions.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.menuOptions.Name = "menuOptions";
             this.menuOptions.Size = new System.Drawing.Size(79, 24);
@@ -116,7 +118,7 @@
             // 
             this.menuProfile.BackColor = System.Drawing.Color.Transparent;
             this.menuProfile.Name = "menuProfile";
-            this.menuProfile.Size = new System.Drawing.Size(245, 26);
+            this.menuProfile.Size = new System.Drawing.Size(284, 26);
             this.menuProfile.Text = "🏠 Личный кабинет";
             this.menuProfile.Click += new System.EventHandler(this.menuProfile_Click);
             this.menuProfile.Paint += new System.Windows.Forms.PaintEventHandler(this.RemoveBackground);
@@ -128,7 +130,7 @@
             this.settingsWorkGroup,
             this.settingsPdfGroup});
             this.menuSettings.Name = "menuSettings";
-            this.menuSettings.Size = new System.Drawing.Size(245, 26);
+            this.menuSettings.Size = new System.Drawing.Size(284, 26);
             this.menuSettings.Text = "⚙ Настройки";
             this.menuSettings.Paint += new System.Windows.Forms.PaintEventHandler(this.RemoveBackground);
             // 
@@ -182,7 +184,7 @@
             // 
             this.menuLogout.BackColor = System.Drawing.Color.Transparent;
             this.menuLogout.Name = "menuLogout";
-            this.menuLogout.Size = new System.Drawing.Size(245, 26);
+            this.menuLogout.Size = new System.Drawing.Size(284, 26);
             this.menuLogout.Text = "🚪 Выйти из аккаунта";
             this.menuLogout.Click += new System.EventHandler(this.menuLogout_Click);
             this.menuLogout.Paint += new System.Windows.Forms.PaintEventHandler(this.RemoveBackground);
@@ -190,9 +192,16 @@
             // adminToolStripMenuItem
             // 
             this.adminToolStripMenuItem.Name = "adminToolStripMenuItem";
-            this.adminToolStripMenuItem.Size = new System.Drawing.Size(245, 26);
-            this.adminToolStripMenuItem.Text = "Админ панель";
+            this.adminToolStripMenuItem.Size = new System.Drawing.Size(284, 26);
+            this.adminToolStripMenuItem.Text = "🛠️Админ панель";
             this.adminToolStripMenuItem.Click += new System.EventHandler(this.adminToolStripMenuItem_Click);
+            // 
+            // статистикаСотрудниковToolStripMenuItem
+            // 
+            this.статистикаСотрудниковToolStripMenuItem.Name = "статистикаСотрудниковToolStripMenuItem";
+            this.статистикаСотрудниковToolStripMenuItem.Size = new System.Drawing.Size(284, 26);
+            this.статистикаСотрудниковToolStripMenuItem.Text = "📈 Статистика сотрудников";
+            this.статистикаСотрудниковToolStripMenuItem.Click += new System.EventHandler(this.статистикаСотрудниковToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -225,5 +234,6 @@
         }
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripMenuItem adminToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem статистикаСотрудниковToolStripMenuItem;
     }
 }

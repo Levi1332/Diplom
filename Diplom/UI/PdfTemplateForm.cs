@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Diplom.UI
@@ -11,7 +12,7 @@ namespace Diplom.UI
         {
             InitializeComponent();
             txtTemplate.Text = currentTemplate;
-
+            this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
         }
 
         private void BtnSave_Click(object sender, EventArgs e)

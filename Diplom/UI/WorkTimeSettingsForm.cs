@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Diplom
@@ -37,6 +38,7 @@ namespace Diplom
 
             timePickerLunch.Visible = lunchTime;
             cmbLunchDuration.Visible = lunchSession;
+            this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
         }
 
         private void btnSave_Click(object sender, EventArgs e)

@@ -1,226 +1,405 @@
-﻿using Aspose.Pdf;
-using Aspose.Pdf.Text;
+﻿using QuestPDF.Fluent;
+using QuestPDF.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
+using Diplom;
+using System.Data;
+using System.Collections.Generic;
+using Diplom.Core;
+using System.Diagnostics;
+using System.Windows.Forms;
+using System.IO;
 
-namespace Diplom.Core.Service
+
+public class PdfReportService : IPdfReportService
 {
-    public class PdfReportService : IPdfReportService
+    private readonly IWorkSessionService _workSessionService;
+    private readonly IViolationService _violationService;
+    private readonly IOvertimeService _overtimeService;
+
+    public PdfReportService(IWorkSessionService ws, IViolationService vs, IOvertimeService os)
     {
-        private readonly IWorkSessionService _workSessionService;
-        private readonly IViolationService _violationService;
-        private readonly IOvertimeService _overtimeService;
+        _workSessionService = ws;
+        _violationService = vs;
+        _overtimeService = os;
+    }
+    public PdfReportService(){ }
 
-        public PdfReportService(IWorkSessionService ws, IViolationService vs, IOvertimeService os)
+    public void ExportCombinedReportForUsers(List<int> userIds, List<string> userNames, DateTime from, DateTime to, string filePath, IProgress<int> progress)
+    {
+        var userCount = userIds.Count;
+        var progressStep = 100 / Math.Max(userCount, 1);
+        int completed = 0;
+
+        var document = Document.Create(doc =>
         {
-            _workSessionService = ws;
-            _violationService = vs;
-            _overtimeService = os;
-        }
-
-        public void ExportFullReport(int userId, DateTime from, DateTime to, string filePath, IProgress<int> progress)
-        {
-            Document doc = new Document();
-            var page = doc.Pages.Add();
-
-            var headerFont = FontRepository.FindFont("Helvetica-Bold");
-            var bodyFont = FontRepository.FindFont("Helvetica");
-
-            AddTitle(page, "Отчёт о рабочем времени", headerFont, 16, Aspose.Pdf.Color.FromRgb(System.Drawing.Color.DarkBlue));
-            AddParagraph(page, $"Период: {from:dd.MM.yyyy} - {to:dd.MM.yyyy}", bodyFont);
-            AddParagraph(page, $"Дата генерации: {DateTime.Now:g}", bodyFont);
-            page.Paragraphs.Add(new TextFragment(" "));
-
-            // 1. Таблица учёта рабочего времени
-            AddSubTitle(page, "1. Таблица учёта рабочего времени", headerFont);
-            var sessions = _workSessionService.GetUserSessions(userId)
-                .Where(s => s.StartTime.Date >= from.Date && s.StartTime.Date <= to.Date)
-                .OrderBy(s => s.StartTime)
-                .ToList();
-
-            var tableWork = CreateTable(new[] { "Дата", "Начало", "Окончание", "Отработано" });
-
-            if (sessions.Count == 0)
+            foreach (var i in Enumerable.Range(0, userCount))
             {
-                AddEmptyRow(tableWork, "Нет данных о рабочих сессиях", 4);
+                int userId = userIds[i];
+                string userName = userNames.Count > i ? userNames[i] : $"ID {userId}";
+
+                var sessions = _workSessionService.GetUserSessions(userId)
+                    .Where(s => s.StartTime.Date >= from.Date && s.StartTime.Date <= to.Date)
+                    .OrderBy(s => s.StartTime)
+                    .ToList();
+
+                var overtimes = _overtimeService.GetUserOvertimes(userId, from, to);
+
+                var violations = _violationService.GetViolations(userId)
+                    .AsEnumerable()
+                    .Where(v => v.Field<DateTime>("Время нарушения").Date >= from.Date && v.Field<DateTime>("Время нарушения").Date <= to.Date)
+                    .ToList();
+
+                doc.Page(page =>
+                {
+                    page.Margin(30);
+
+                    page.Header().Text($"📄 Отчёт пользователя {userName}")
+                        .FontSize(20)
+                        .Bold()
+                        .FontColor(Colors.Blue.Darken2);
+
+                    page.Content().Column(col =>
+                    {
+                        col.Spacing(20);
+
+                        col.Item().Text($"📅 Период: {from:dd.MM.yyyy} - {to:dd.MM.yyyy}")
+                            .FontSize(12);
+                        col.Item().Text($"🕒 Сформировано: {DateTime.Now:g}")
+                            .FontSize(10)
+                            .FontColor(Colors.Grey.Darken1);
+
+                        col.Item().Element(Block).Column(inner =>
+                        {
+                            inner.Item().Text("1. Учёт рабочего времени")
+                                .Bold()
+                                .FontSize(14);
+                            inner.Item().Element(c => AddSessionTable(c, sessions));
+                        });
+
+                        col.Item().Element(Block).Column(inner =>
+                        {
+                            inner.Item().Text("2. Переработки")
+                                .Bold()
+                                .FontSize(14);
+                            inner.Item().Element(c => AddOvertimeTable(c, overtimes));
+                        });
+
+                        col.Item().Element(Block).Column(inner =>
+                        {
+                            inner.Item().Text("3. Нарушения")
+                                .Bold()
+                                .FontSize(14);
+                            inner.Item().Element(c => AddViolationTable(c, violations));
+                        });
+                    });
+
+                    page.Footer().AlignCenter()
+                        .Text($"📌 Документ сгенерирован автоматически. Общий отчёт | {DateTime.Now:g}")
+                        .FontSize(9)
+                        .FontColor(Colors.Grey.Medium);
+                });
+
+                completed++;
+                progress?.Report(completed * progressStep);
+            }
+        });
+
+        document.GeneratePdf(filePath);
+        progress?.Report(100);
+    }
+    public void ExportFullReport(int userId, DateTime from, DateTime to, string filePath, IProgress<int> progress,string userName)
+    {
+        var sessions = _workSessionService.GetUserSessions(userId)
+            .Where(s => s.StartTime.Date >= from.Date && s.StartTime.Date <= to.Date)
+            .OrderBy(s => s.StartTime)
+            .ToList();
+
+        var overtimes = _overtimeService.GetUserOvertimes(userId, from, to);
+        var violations = _violationService.GetViolations(userId)
+            .AsEnumerable()
+            .Where(v => v.Field<DateTime>("Время нарушения").Date >= from.Date && v.Field<DateTime>("Время нарушения").Date <= to.Date)
+            .ToList();
+
+        var document = Document.Create(doc =>
+        {
+            doc.Page(page =>
+            {
+                page.Margin(30);
+                page.Header().Text($"📄 Отчёт пользователя {userName}").FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
+
+                page.Content().Column(col =>
+                {
+                    col.Spacing(20);
+
+                    col.Item().Text($"📅 Период: {from:dd.MM.yyyy} - {to:dd.MM.yyyy}").FontSize(12);
+                    col.Item().Text($"🕒 Сформировано: {DateTime.Now:g}").FontSize(10).FontColor(Colors.Grey.Darken1);
+
+                    col.Item().Element(Block).Column(inner =>
+                    {
+                        inner.Item().Text("1. Учёт рабочего времени").Bold().FontSize(14);
+                        inner.Item().Element(c => AddSessionTable(c, sessions));
+                    });
+
+                    progress?.Report(20);
+
+                    col.Item().Element(Block).Column(inner =>
+                    {
+                        inner.Item().Text("2. Переработки").Bold().FontSize(14);
+                        inner.Item().Element(c => AddOvertimeTable(c, overtimes));
+                    });
+
+                    progress?.Report(40);
+
+                    col.Item().Element(Block).Column(inner =>
+                    {
+                        inner.Item().Text("3. Нарушения").Bold().FontSize(14);
+                        inner.Item().Element(c => AddViolationTable(c, violations));
+                    });
+
+                    progress?.Report(70);
+                });
+
+                page.Footer().AlignCenter().Text("📌 Документ сгенерирован автоматически.")
+                    .FontSize(9).FontColor(Colors.Grey.Medium);
+            });
+        });
+
+        document.GeneratePdf(filePath);
+        progress?.Report(100);
+    }
+
+
+
+    public void ExportCombinedReport(List<int> userIds, DateTime from, DateTime to, string filePath, IProgress<int> progress, List<string> userNames)
+    {
+        var userCount = userIds.Count;
+        var progressStep = 100 / Math.Max(userCount, 1);
+        int completed = 0;
+
+        var document = Document.Create(doc =>
+        {
+            foreach (var i in Enumerable.Range(0, userCount))
+            {
+                int userId = userIds[i];
+                string userName = userNames.Count > i ? userNames[i] : $"ID {userId}";
+
+                var sessions = _workSessionService.GetUserSessions(userId)
+                    .Where(s => s.StartTime.Date >= from.Date && s.StartTime.Date <= to.Date)
+                    .OrderBy(s => s.StartTime)
+                    .ToList();
+
+                var overtimes = _overtimeService.GetUserOvertimes(userId, from, to);
+                var violations = _violationService.GetViolations(userId)
+                    .AsEnumerable()
+                    .Where(v => v.Field<DateTime>("Время нарушения").Date >= from.Date && v.Field<DateTime>("Время нарушения").Date <= to.Date)
+                    .ToList();
+
+                doc.Page(page =>
+                {
+                    page.Margin(30);
+
+                    page.Header().Text($"📄 Отчёт пользователя {userName}").FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
+
+                    page.Content().Column(col =>
+                    {
+                        col.Spacing(20);
+
+                        col.Item().Text($"📅 Период: {from:dd.MM.yyyy} - {to:dd.MM.yyyy}").FontSize(12);
+                        col.Item().Text($"🕒 Сформировано: {DateTime.Now:g}").FontSize(10).FontColor(Colors.Grey.Darken1);
+
+                        col.Item().Element(Block).Column(inner =>
+                        {
+                            inner.Item().Text("1. Учёт рабочего времени").Bold().FontSize(14);
+                            inner.Item().Element(c => AddSessionTable(c, sessions));
+                        });
+
+                        col.Item().Element(Block).Column(inner =>
+                        {
+                            inner.Item().Text("2. Переработки").Bold().FontSize(14);
+                            inner.Item().Element(c => AddOvertimeTable(c, overtimes));
+                        });
+
+                        col.Item().Element(Block).Column(inner =>
+                        {
+                            inner.Item().Text("3. Нарушения").Bold().FontSize(14);
+                            inner.Item().Element(c => AddViolationTable(c, violations));
+                        });
+                    });
+
+                    page.Footer().AlignCenter().Text($"📌 Документ сгенерирован автоматически. Общий отчёт | {DateTime.Now:g}")
+                        .FontSize(9).FontColor(Colors.Grey.Medium);
+                });
+
+                completed++;
+                progress?.Report(completed * progressStep);
+            }
+        });
+
+        document.GeneratePdf(filePath);
+        progress?.Report(100);
+
+    }
+
+    private void AddSessionTable(QuestPDF.Infrastructure.IContainer container, List<WorkSession> sessions)
+    {
+        container.Column(col =>
+        {
+          
+            col.Item().Element(TableStyle).Table(table =>
+            {
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.RelativeColumn(2); // Дата
+                    columns.RelativeColumn(1); // Начало
+                    columns.RelativeColumn(1); // Окончание
+                    columns.RelativeColumn(2); // Отработано
+                });
+
+                table.Header(header =>
+                {
+                    header.Cell().Element(CellHeader).Text("Дата");
+                    header.Cell().Element(CellHeader).Text("Начало");
+                    header.Cell().Element(CellHeader).Text("Окончание");
+                    header.Cell().Element(CellHeader).Text("Отработано");
+                });
+
+                if (sessions.Count == 0)
+                {
+                    table.Cell().ColumnSpan(4).Element(CellContent).Text("Нет данных").Italic();
+                    return;
+                }
+
+                foreach (var s in sessions)
+                {
+                    var dur = s.EndTime.HasValue ? s.EndTime.Value - s.StartTime : TimeSpan.Zero;
+                    table.Cell().Element(CellContent).Text(s.StartTime.ToString("dd.MM.yyyy"));
+                    table.Cell().Element(CellContent).Text(s.StartTime.ToString("HH:mm"));
+                    table.Cell().Element(CellContent).Text(s.EndTime?.ToString("HH:mm") ?? "-");
+                    table.Cell().Element(CellContent).Text(dur.ToString(@"hh\:mm"));
+                }
+            });
+        });
+    }
+
+    private void AddOvertimeTable(QuestPDF.Infrastructure.IContainer container, List<OvertimeSession> overtimes)
+    {
+        container.Column(col =>
+        {
+          
+            col.Item().Element(TableStyle).Table(table =>
+            {
+                table.ColumnsDefinition(c =>
+                {
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                });
+
+                table.Header(h =>
+                {
+                    h.Cell().Element(CellHeader).Text("Дата");
+                    h.Cell().Element(CellHeader).Text("Начало");
+                    h.Cell().Element(CellHeader).Text("Сверхурочно");
+                });
+
+                if (overtimes.Count == 0)
+                {
+                    table.Cell().ColumnSpan(3).Element(CellContent).Text("Нет данных").Italic();
+                    return;
+                }
+
+                foreach (var ot in overtimes)
+                {
+                    table.Cell().Element(CellContent).Text(ot.StartTime.ToString("dd.MM.yyyy"));
+                    table.Cell().Element(CellContent).Text(ot.StartTime.ToString("HH:mm"));
+                    table.Cell().Element(CellContent).Text(TimeSpan.FromMinutes(ot.ExtraTime).ToString(@"hh\:mm"));
+                }
+            });
+        });
+    }
+
+    private void AddViolationTable(QuestPDF.Infrastructure.IContainer container, List<DataRow> violations)
+    {
+        container.Column(col =>
+        {
+          
+            col.Item().Element(TableStyle).Table(table =>
+            {
+                table.ColumnsDefinition(c =>
+                {
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                    c.RelativeColumn();
+                });
+
+                table.Header(h =>
+                {
+                    h.Cell().Element(CellHeader).Text("Время");
+                    h.Cell().Element(CellHeader).Text("Нарушение");
+                    h.Cell().Element(CellHeader).Text("Степень");
+                    h.Cell().Element(CellHeader).Text("Комментарий");
+                });
+
+                if (violations.Count == 0)
+                {
+                    table.Cell().ColumnSpan(4).Element(CellContent).Text("Нет данных").Italic();
+                    return;
+                }
+
+                foreach (var row in violations)
+                {
+                    table.Cell().Element(CellContent).Text(row.Field<DateTime>("Время нарушения").ToString("dd.MM.yyyy HH:mm"));
+                    table.Cell().Element(CellContent).Text(row.Field<string>("Расшифровка нарушения") ?? "-");
+                    table.Cell().Element(CellContent).Text(row.Field<string>("Степень") ?? "-");
+                    table.Cell().Element(CellContent).Text(row.Field<string>("Комментарий администратора") ?? "-");
+                }
+            });
+        });
+    }
+    public void OpenPdfFile(string filePath)
+    {
+        try
+        {
+            if (File.Exists(filePath))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = filePath,
+                    UseShellExecute = true
+                });
             }
             else
             {
-                for (int i = 0; i < sessions.Count; i++)
-                {
-                    var s = sessions[i];
-                    TimeSpan duration = s.EndTime.HasValue ? s.EndTime.Value - s.StartTime : TimeSpan.Zero;
-
-                    var row = tableWork.Rows.Add();
-                    row.Cells.Add(s.StartTime.ToString("dd.MM.yyyy"));
-                    row.Cells.Add(s.StartTime.ToString("HH:mm"));
-                    row.Cells.Add(s.EndTime?.ToString("HH:mm") ?? "-");
-                    row.Cells.Add(duration.ToString(@"hh\:mm"));
-
-                    progress?.Report((i + 1) * 20 / Math.Max(sessions.Count, 1));
-                }
+                MessageBox.Show("Файл не найден для открытия.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            page.Paragraphs.Add(tableWork);
-            page.Paragraphs.Add(new TextFragment(" "));
-
-            // 2. Таблица сверхурочных
-            AddSubTitle(page, "2. Таблица сверхурочных (по данным системы)", headerFont);
-            var tableExtra = CreateTable(new[] { "Дата", "Время начала", "Сверхурочные (ч:мм)" });
-
-            var overtimeSessions = _overtimeService.GetUserOvertimes(userId, from, to);
-
-            if (overtimeSessions.Count == 0)
-            {
-                AddEmptyRow(tableExtra, "Нет данных о переработках", 3);
-            }
-            else
-            {
-                for (int i = 0; i < overtimeSessions.Count; i++)
-                {
-                    var s = overtimeSessions[i];
-                    var row = tableExtra.Rows.Add();
-                    row.Cells.Add(s.StartTime.ToString("dd.MM.yyyy"));
-                    row.Cells.Add(s.StartTime.ToString("HH:mm"));
-                    row.Cells.Add(TimeSpan.FromMinutes(s.ExtraTime).ToString(@"hh\:mm"));
-
-                    progress?.Report(20 + (i + 1) * 20 / Math.Max(overtimeSessions.Count, 1));
-                }
-            }
-
-            page.Paragraphs.Add(tableExtra);
-            page.Paragraphs.Add(new TextFragment(" "));
-
-            // 3. Таблица нарушений
-            AddSubTitle(page, "3. Таблица нарушений режима", headerFont);
-            var tableViol = CreateTable(new[] { "Время нарушения", "Нарушенное правило", "Степень", "Комментарий администратора" });
-
-            var vData = _violationService.GetViolations()
-                .AsEnumerable()
-                .Where(v => v.Field<DateTime>("Время нарушения").Date >= from.Date && v.Field<DateTime>("Время нарушения").Date <= to.Date)
-                .ToList();
-
-            if (vData.Count == 0)
-            {
-                AddEmptyRow(tableViol, "Нет зафиксированных нарушений", 4);
-            }
-            else
-            {
-                for (int i = 0; i < vData.Count; i++)
-                {
-                    var rowData = vData[i];
-                    var row = tableViol.Rows.Add();
-                    row.Cells.Add(rowData.Field<DateTime>("Время нарушения").ToString("dd.MM.yyyy HH:mm"));
-                    row.Cells.Add(rowData.Field<string>("Расшифровка нарушения") ?? "-");
-                    row.Cells.Add(rowData.Field<string>("Степень") ?? "-");
-                    row.Cells.Add(rowData.Field<string>("Комментарий администратора") ?? "-");
-
-                    progress?.Report(40 + (i + 1) * 60 / Math.Max(vData.Count, 1));
-                }
-            }
-
-            page.Paragraphs.Add(tableViol);
-
-            page.Paragraphs.Add(new TextFragment(" "));
-            var footer = new TextFragment("Документ сгенерирован автоматически.")
-            {
-                TextState =
-                {
-                    Font = bodyFont,
-                    FontSize = 8,
-                    ForegroundColor = Aspose.Pdf.Color.Gray
-                }
-            };
-            page.Paragraphs.Add(footer);
-
-            doc.Save(filePath);
         }
-
-        private void AddTitle(Page page, string text, Aspose.Pdf.Text.Font font, int size, Aspose.Pdf.Color color)
+        catch (Exception ex)
         {
-            var title = new TextFragment(text)
-            {
-                TextState =
-                {
-                    Font = font,
-                    FontSize = size,
-                    ForegroundColor = color
-                }
-            };
-            page.Paragraphs.Add(title);
-        }
-
-        private void AddSubTitle(Page page, string text, Aspose.Pdf.Text.Font font)
-        {
-            var subtitle = new TextFragment(text)
-            {
-                TextState =
-                {
-                    Font = font,
-                    FontSize = 13,
-                    ForegroundColor = Aspose.Pdf.Color.Black
-                }
-            };
-            page.Paragraphs.Add(subtitle);
-        }
-
-        private void AddParagraph(Page page, string text, Aspose.Pdf.Text.Font font)
-        {
-            var p = new TextFragment(text)
-            {
-                TextState =
-                {
-                    Font = font,
-                    FontSize = 11,
-                    ForegroundColor = Aspose.Pdf.Color.Black
-                }
-            };
-            page.Paragraphs.Add(p);
-        }
-
-        private Aspose.Pdf.Table CreateTable(string[] headers)
-        {
-            var table = new Aspose.Pdf.Table
-            {
-                ColumnWidths = string.Join(" ", headers.Select(_ => "100")),
-                Border = new BorderInfo(BorderSide.All, 0.5f),
-                DefaultCellBorder = new BorderInfo(BorderSide.All, 0.5f),
-                DefaultCellPadding = new MarginInfo(4, 2, 4, 2)
-            };
-
-            var headerRow = table.Rows.Add();
-            foreach (var text in headers)
-            {
-                var cell = headerRow.Cells.Add(text);
-                cell.BackgroundColor = Aspose.Pdf.Color.DarkGray;
-                cell.DefaultCellTextState = new TextState
-                {
-                    Font = FontRepository.FindFont("Helvetica-Bold"),
-                    FontSize = 10,
-                    ForegroundColor = Aspose.Pdf.Color.White
-                };
-            }
-
-            return table;
-        }
-
-        private void AddEmptyRow(Aspose.Pdf.Table table, string message, int colspan)
-        {
-            var row = table.Rows.Add();
-            var cell = row.Cells.Add(message);
-            cell.ColSpan = colspan;
-            cell.Alignment = HorizontalAlignment.Center;
-            cell.DefaultCellTextState = new TextState
-            {
-                Font = FontRepository.FindFont("Helvetica-Oblique"),
-                FontSize = 10,
-                ForegroundColor = Aspose.Pdf.Color.Gray
-            };
+            MessageBox.Show($"Не удалось открыть файл: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
+
+
+    private static QuestPDF.Infrastructure.IContainer CellHeader(QuestPDF.Infrastructure.IContainer container) =>
+         container.Border(1)
+                  .BorderColor(Colors.Grey.Lighten2)
+                  .Background(Colors.Grey.Lighten3)
+                  .Padding(5)
+                  .DefaultTextStyle(x => x.SemiBold().FontColor(Colors.Black));
+
+    private static QuestPDF.Infrastructure.IContainer CellContent(QuestPDF.Infrastructure.IContainer container) =>
+        container.Border(1)
+                 .BorderColor(Colors.Grey.Lighten2)
+                 .Padding(5);
+
+    private static QuestPDF.Infrastructure.IContainer TableStyle(QuestPDF.Infrastructure.IContainer container) =>
+     container.Border(1)
+              .BorderColor(Colors.Grey.Lighten1)
+              .PaddingVertical(5)
+              .Background(Colors.White); 
+
+    private static QuestPDF.Infrastructure.IContainer Block(QuestPDF.Infrastructure.IContainer container) =>
+        container.Padding(10).Border(1).BorderColor(Colors.Grey.Lighten2).Background(Colors.White);
 }

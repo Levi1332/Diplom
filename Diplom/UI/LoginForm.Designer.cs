@@ -92,11 +92,11 @@ namespace Diplom
             this.labelTitle.BackColor = System.Drawing.Color.Transparent;
             this.labelTitle.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold);
             this.labelTitle.ForeColor = System.Drawing.Color.White;
-            this.labelTitle.Location = new System.Drawing.Point(-2, 48);
+            this.labelTitle.Location = new System.Drawing.Point(84, 23);
             this.labelTitle.Name = "labelTitle";
-            this.labelTitle.Size = new System.Drawing.Size(398, 29);
+            this.labelTitle.Size = new System.Drawing.Size(241, 29);
             this.labelTitle.TabIndex = 0;
-            this.labelTitle.Text = "Добро пожаловать в RemoTrack";
+            this.labelTitle.Text = "Добро пожаловать";
             // 
             // pictureBox1
             // 
@@ -127,7 +127,7 @@ namespace Diplom
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "RemoTrack | Авторизация";
+            this.Text = "Авторизация";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

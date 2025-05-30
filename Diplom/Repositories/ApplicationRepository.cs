@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.IO;
 
 namespace Diplom
@@ -46,5 +47,33 @@ namespace Diplom
                 lastLoggedWindow = string.Empty;
             }
         }
+        public TimeSpan GetWorkedTimeToday(int userId)
+        {
+            var totalSeconds = 0;
+
+            using (var connection = new SqlConnection(DatabaseConfig.connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand(@"
+            SELECT ISNULL(SUM(EffectiveTime), 0)
+            FROM [EmployeeMonitoring].[dbo].[WorkSessions]
+            WHERE 
+                [UserID] = @UserId AND
+                CAST([StartTime] AS DATE) = CAST(GETDATE() AS DATE)", connection);
+
+                command.Parameters.AddWithValue("@UserId", userId);
+
+                var result = command.ExecuteScalar();
+
+                if (result != null && int.TryParse(result.ToString(), out int seconds))
+                {
+                    totalSeconds = seconds;
+                }
+            }
+
+            return TimeSpan.FromSeconds(totalSeconds);
+        }
+
     }
 }

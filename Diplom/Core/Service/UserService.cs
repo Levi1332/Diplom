@@ -20,24 +20,23 @@ namespace Diplom.Core.Service
                 conn.Open();
 
                 string query = @"
-                    SELECT 
-                        u.UserID,
-                        u.FullName,
-                        u.Login,
-                        u.Email,
-                        u.Warnings,
-                        u.CreatedAt,
-                        u.Role,
-                        u.IsBanned,
-                        ISNULL(SUM(CASE 
-                            WHEN CAST(ws.StartTime AS DATE) = CAST(GETDATE() AS DATE) THEN ws.EffectiveTime ELSE 0 END), 0) / 60 AS TodayWorkMinutes,
-                        ISNULL(SUM(ws.EffectiveTime), 0) / 60 AS TotalWorkMinutes
-                    FROM Users u
-                    LEFT JOIN WorkSessions ws ON u.UserID = ws.UserID
-                    WHERE Role = 'employee'
-                    GROUP BY u.UserID, u.FullName, u.Login, u.Email, u.Warnings, u.Role, u.IsBanned, u.CreatedAt
-                ";
-
+            SELECT 
+                u.UserID AS [ID],
+                u.FullName AS [ФИО],
+                u.Login AS [Логин],
+                u.Email AS [Email],
+                u.Warnings AS [Предупреждения],
+                u.CreatedAt AS [Дата регистрации],
+                u.Role AS [Роль],
+                u.IsBanned AS [Заблокирован],
+                ISNULL(SUM(CASE 
+                    WHEN CAST(ws.StartTime AS DATE) = CAST(GETDATE() AS DATE) THEN ws.EffectiveTime ELSE 0 END), 0) / 60 AS [Время сегодня (мин)],
+                ISNULL(SUM(ws.EffectiveTime), 0) / 60 AS [Общее время (мин)]
+            FROM Users u
+            LEFT JOIN WorkSessions ws ON u.UserID = ws.UserID
+            WHERE Role = 'employee'
+            GROUP BY u.UserID, u.FullName, u.Login, u.Email, u.Warnings, u.Role, u.IsBanned, u.CreatedAt
+        ";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
                 DataTable usersTable = new DataTable();
@@ -46,7 +45,45 @@ namespace Diplom.Core.Service
                 return usersTable;
             }
         }
-     
+
+        public DataTable GetAllUsers(DateTime from, DateTime to)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                string query = @"
+            SELECT 
+                u.UserID AS [ID],
+                u.FullName AS [ФИО],
+                u.Login AS [Логин],
+                u.Email AS [Email],
+                u.Warnings AS [Предупреждения],
+                u.CreatedAt AS [Дата регистрации],
+                u.Role AS [Роль],
+                u.IsBanned AS [Заблокирован],
+                ISNULL(SUM(CASE 
+                    WHEN CAST(ws.StartTime AS DATE) = CAST(GETDATE() AS DATE) THEN ws.EffectiveTime ELSE 0 END), 0) / 60 AS [Время сегодня (мин)],
+                ISNULL(SUM(CASE 
+                    WHEN ws.StartTime >= @FromDate AND ws.EndTime <= @ToDate THEN ws.EffectiveTime ELSE 0 END), 0) / 60 AS [Общее время (мин)]
+            FROM Users u
+            LEFT JOIN WorkSessions ws ON u.UserID = ws.UserID
+            
+            GROUP BY u.UserID, u.FullName, u.Login, u.Email, u.Warnings, u.Role, u.IsBanned, u.CreatedAt
+        ";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@FromDate", from);
+                cmd.Parameters.AddWithValue("@ToDate", to);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                DataTable usersTable = new DataTable();
+                adapter.Fill(usersTable);
+
+                return usersTable;
+            }
+        }
+
         public LoginResult GetUserByLogin(string login)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -129,13 +166,13 @@ namespace Diplom.Core.Service
 
             return list;
         }
-        public void DeleteUserByLogin(string login)
+        public void DeleteUserByID(int id)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("DELETE FROM Users WHERE Login = @Login", conn);
-                cmd.Parameters.AddWithValue("@Login", login);
+                var cmd = new SqlCommand("DELETE FROM Users WHERE UserID = @ID", conn);
+                cmd.Parameters.AddWithValue("@ID", id);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -144,18 +181,77 @@ namespace Diplom.Core.Service
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                string query = @"SELECT UserID, FullName, Login, Email, Role, IsBanned, CreatedAt
-                         FROM Users
-                         WHERE FullName LIKE @kw OR Login LIKE @kw";
 
-                SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
-                adapter.SelectCommand.Parameters.AddWithValue("@kw", "%" + keyword + "%");
+                string query = @"
+            SELECT 
+                u.UserID AS [ID],
+                u.FullName AS [ФИО],
+                u.Login AS [Логин],
+                u.Email AS [Email],
+                u.Warnings AS [Предупреждения],
+                u.CreatedAt AS [Дата регистрации],
+                u.Role AS [Роль],
+                u.IsBanned AS [Заблокирован],
+                ISNULL(SUM(CASE 
+                    WHEN CAST(ws.StartTime AS DATE) = CAST(GETDATE() AS DATE) THEN ws.EffectiveTime ELSE 0 END), 0) / 60 AS [Время сегодня (мин)],
+                ISNULL(SUM(ws.EffectiveTime), 0) / 60 AS [Общее время (мин)]
+            FROM Users u
+            LEFT JOIN WorkSessions ws ON u.UserID = ws.UserID
+            WHERE u.FullName LIKE @kw OR u.Login LIKE @kw
+            GROUP BY u.UserID, u.FullName, u.Login, u.Email, u.Warnings, u.Role, u.IsBanned, u.CreatedAt
+        ";
 
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 DataTable result = new DataTable();
                 adapter.Fill(result);
                 return result;
             }
         }
+
+        public DataTable SearchUsers(string keyword, DateTime from, DateTime to)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                string query = @"
+            SELECT 
+                u.UserID AS [ID],
+                u.FullName AS [ФИО],
+                u.Login AS [Логин],
+                u.Email AS [Email],
+                u.Warnings AS [Предупреждения],
+                u.CreatedAt AS [Дата регистрации],
+                u.Role AS [Роль],
+                u.IsBanned AS [Заблокирован],
+                ISNULL(SUM(CASE 
+                    WHEN CAST(ws.StartTime AS DATE) = CAST(GETDATE() AS DATE) THEN ws.EffectiveTime ELSE 0 END), 0) / 60 AS [Время сегодня (мин)],
+                ISNULL(SUM(CASE 
+                    WHEN ws.StartTime >= @FromDate AND ws.EndTime <= @ToDate THEN ws.EffectiveTime ELSE 0 END), 0) / 60 AS [Общее время (мин)]
+            FROM Users u
+            LEFT JOIN WorkSessions ws ON u.UserID = ws.UserID
+            WHERE (u.FullName LIKE @kw OR u.Login LIKE @kw)
+              AND u.Role = 'employee'
+            GROUP BY u.UserID, u.FullName, u.Login, u.Email, u.Warnings, u.Role, u.IsBanned, u.CreatedAt
+        ";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
+                cmd.Parameters.AddWithValue("@FromDate", from);
+                cmd.Parameters.AddWithValue("@ToDate", to);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                DataTable result = new DataTable();
+                adapter.Fill(result);
+                return result;
+            }
+        }
+
+
+
         public bool ValidateFields(string login, string fullName, string email, string passwordHash, string salt, bool isEditMode)
         {
             if (string.IsNullOrWhiteSpace(login) ||

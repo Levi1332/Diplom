@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using Diplom.Security;
 using Diplom.Core.Service;
+using System.Drawing;
 
 namespace Diplom.UI
 {
@@ -23,6 +24,7 @@ namespace Diplom.UI
             _isEditMode = false;
             textBoxCreatedAt.Visible = false;
             labelCreatedAt.Visible = false;
+            this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
         }
 
         public UserEditForm(LoginResult user, string name, string email, string dataCreate)

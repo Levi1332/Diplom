@@ -27,11 +27,14 @@ namespace Diplom
         private WorkTimeSettings _settings;
         private ToolStripMenuItem openPdfAfterExportMenuItem;
         private HiddenAntiCheatService _antiCheatService;
+        private ApplicationRepository applicationRepository;
+        private WorkTimer workTimer;
         private DateTime lastLunchDay = LunchPersistenceHelper.LoadLunchDay();
         private int userId;
         private string _role; 
         private bool lunchPauseActive = false;
         private bool isLunchBreak = false;
+        private bool updateTimer = false;
 
         public MainForm(int userId, string role)
         {
@@ -40,6 +43,10 @@ namespace Diplom
             this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
             this.userId = userId;
             _role = role;
+            applicationRepository = new ApplicationRepository(connectionString);
+            TimeSpan workedTime = applicationRepository.GetWorkedTimeToday(userId);
+            workTimer = new WorkTimer(lblTimer);
+            workTimer.SetElapsedTime(workedTime); 
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -64,7 +71,8 @@ namespace Diplom
 
 
             adminToolStripMenuItem.Visible = (_role == "admin");
-           
+            статистикаСотрудниковToolStripMenuItem.Visible = (_role == "HR" || _role == "admin");
+
         }
 
         private void SetTheme(string theme, ToolStripMenuItem system, ToolStripMenuItem light)
@@ -329,6 +337,12 @@ namespace Diplom
 
         private void btnStartWork_Click(object sender, EventArgs e)
         {
+            if (!updateTimer)
+            {
+                TimeSpan workedTime = applicationRepository.GetWorkedTimeToday(userId);
+                workSession.SetElapsedTime(workedTime);
+                updateTimer = true;
+            }
             workSession.Start();
             appTracker.StartTracking();
 
@@ -459,18 +473,18 @@ namespace Diplom
             {
                 settingsPdfGroup.DropDownItems.Add(openPdfAfterExportMenuItem);
             }
-            var languageGroup = new ToolStripMenuItem("🌍 Язык");
+            //var languageGroup = new ToolStripMenuItem("🌍 Язык");
 
-            var langRu = new ToolStripMenuItem("Русский") { Checked = _settings.Language == "ru", CheckOnClick = true };
-            var langEn = new ToolStripMenuItem("English") { Checked = _settings.Language == "en", CheckOnClick = true };
+            //var langRu = new ToolStripMenuItem("Русский") { Checked = _settings.Language == "ru", CheckOnClick = true };
+            //var langEn = new ToolStripMenuItem("English") { Checked = _settings.Language == "en", CheckOnClick = true };
 
-            langRu.Click += (s, e) => ChangeLanguage("ru");
-            langEn.Click += (s, e) => ChangeLanguage("en");
+            //langRu.Click += (s, e) => ChangeLanguage("ru");
+            //langEn.Click += (s, e) => ChangeLanguage("en");
 
-            languageGroup.DropDownItems.Add(langRu);
-            languageGroup.DropDownItems.Add(langEn);
+            //languageGroup.DropDownItems.Add(langRu);
+            //languageGroup.DropDownItems.Add(langEn);
 
-            menuSettings.DropDownItems.Add(languageGroup);
+            //menuSettings.DropDownItems.Add(languageGroup);
 
         }
 
@@ -569,9 +583,15 @@ namespace Diplom
 
         private void adminToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AdminForm adminForm = new AdminForm();
+            AdminForm adminForm = new AdminForm(userId);
             adminForm.Show();
         }
         public bool IsLunchBreak => isLunchBreak;
+
+        private void статистикаСотрудниковToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EmployeeStatisticsForm employeeStatisticsForm = new EmployeeStatisticsForm();
+            employeeStatisticsForm.Show();
+        }
     }
 }

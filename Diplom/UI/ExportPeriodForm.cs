@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -23,7 +24,7 @@ namespace Diplom.UI
                 ExportPath = Path.Combine(defaultPath, $"Отчет_{DateTime.Today:yyyyMMdd}.pdf");
                 lblPath.Text = ExportPath;
             }
-
+            this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
         }
 
         private void ExportPeriodForm_Load(object sender, EventArgs e)
@@ -97,8 +98,12 @@ namespace Diplom.UI
                 SelectedRange = ExportRange.Custom;
                 CustomFrom = dateFrom.Value.Date;
                 CustomTo = dateTo.Value.Date;
+                if (CustomFrom > CustomTo)
+                {
+                    MessageBox.Show("Дата начала не может быть позже даты окончания.", "Ошибка диапазона", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
-
             DialogResult = DialogResult.OK;
             Close();
         }

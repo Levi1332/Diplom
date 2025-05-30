@@ -48,6 +48,7 @@
             this.btnAddUser = new System.Windows.Forms.Button();
             this.btnEditUser = new System.Windows.Forms.Button();
             this.BtnDeleteUser = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUsers)).BeginInit();
             this.SuspendLayout();
             // 
@@ -64,7 +65,7 @@
             this.dataGridViewUsers.ReadOnly = true;
             this.dataGridViewUsers.RowHeadersWidth = 51;
             this.dataGridViewUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewUsers.Size = new System.Drawing.Size(1035, 369);
+            this.dataGridViewUsers.Size = new System.Drawing.Size(1406, 369);
             this.dataGridViewUsers.TabIndex = 0;
             // 
             // btnBanUser
@@ -91,7 +92,7 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(917, 455);
+            this.btnRefresh.Location = new System.Drawing.Point(1289, 455);
             this.btnRefresh.Margin = new System.Windows.Forms.Padding(4);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(133, 37);
@@ -160,11 +161,22 @@
             this.BtnDeleteUser.UseVisualStyleBackColor = true;
             this.BtnDeleteUser.Click += new System.EventHandler(this.BtnDeleteUser_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(769, 455);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(222, 37);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Добавить запрещенное ПО";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // AdminForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1067, 517);
+            this.ClientSize = new System.Drawing.Size(1435, 517);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.BtnDeleteUser);
             this.Controls.Add(this.dataGridViewUsers);
             this.Controls.Add(this.btnBanUser);
@@ -192,5 +204,6 @@
         #endregion
 
         private System.Windows.Forms.Button BtnDeleteUser;
+        private System.Windows.Forms.Button button1;
     }
 }

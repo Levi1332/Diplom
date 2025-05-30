@@ -160,7 +160,7 @@ namespace Diplom.UI
 
             await Task.Run(() =>
             {
-                _pdfReportService.ExportFullReport(userId, from, to, form.ExportPath, progress);
+                _pdfReportService.ExportFullReport(userId, from, to, form.ExportPath, progress, _userDataService.GetFullName());
             });
 
             progressForm.Close();

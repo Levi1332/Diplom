@@ -10,5 +10,6 @@ namespace Diplom
     public interface IViolationService
     {
         DataTable GetViolations();
+        DataTable GetViolations(int userId);
     }
 }

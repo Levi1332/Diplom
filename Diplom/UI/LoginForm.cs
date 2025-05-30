@@ -22,6 +22,7 @@ namespace Diplom
             this.MaximizeBox = false;
             originalImage = Properties.Resources.eye_closed;
             newImage = Properties.Resources.eye_open;
+            this.AcceptButton = btnLogin;
         }
 
         private void BtnLogin_Click(object sender, EventArgs e)

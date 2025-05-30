@@ -76,6 +76,11 @@ public class WorkTimer
         isRunning = true;
         isPaused = false;
     }
+    public void SetElapsedTime(TimeSpan elapsed)
+    {
+        secondsElapsed = (int)elapsed.TotalSeconds;
+        UpdateTimerDisplay(); 
+    }
 
 
     public bool IsRunning

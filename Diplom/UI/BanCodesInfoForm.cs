@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 using Diplom.Security;
 
@@ -14,6 +15,7 @@ namespace Diplom.UI
         {
             InitializeComponent();
             LoadBanCodes();
+            this.Icon = new Icon(Application.StartupPath + @"\Resources\icon.ico");
         }
 
         private void LoadBanCodes()
